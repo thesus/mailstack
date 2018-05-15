@@ -1,0 +1,16 @@
+smtpd_banner = $myhostname ESMT $mail_name (Ubuntu)
+biff = no
+append_dot_mydomain = no
+readme_directory = no
+
+mynetworks = 127.0.0.0/8
+
+recipient_delimiter =
+inet_interfaces = all
+inet_protocols = all
+
+mydestination = localhost
+myorigin = $POSTFIX_MYORIGIN
+
+# TLS
+smtpd_use_tls = no

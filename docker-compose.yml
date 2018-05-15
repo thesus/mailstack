@@ -1,0 +1,9 @@
+version: "3"
+services:
+  postfix:
+    build: ./postfix
+    env_file:
+      - ./postfix.env
+    ports:
+      - "25:25"
+      - "587:587"
