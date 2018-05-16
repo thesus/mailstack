@@ -1,8 +1,8 @@
 FROM debian:buster-slim
 
-RUN apt-get update && apt-get install postfix postfix-ldap gettext rsyslog -y
+RUN apt-get update && apt-get install dovecot-core dovecot-imapd dovecot-lmtpd dovecot-ldap dovecot-sieve dovecot-managesieved -y
 
-COPY ./main.cf /etc/postfix/main.cf.template
+COPY ./files/dovecot/ /etc/dovecot/
 
 RUN ln -s /run/systemd/journal/dev-log /dev/log
 

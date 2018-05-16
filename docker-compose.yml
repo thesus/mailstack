@@ -7,3 +7,27 @@ services:
     ports:
       - "25:25"
       - "587:587"
+    networks:
+      - internal
+
+  dovecot:
+    build: ./dovecot
+    env_file:
+      - ./dovecot.env
+    ports:
+      - "143:143"
+      - "993:993"
+    volumes:
+      - mailboxes:/var/vmail
+    networks:
+      - internal
+      - auth
+
+volumes:
+  mailboxes:
+
+networks:
+  internal:
+  auth:
+    external:
+      name: auth
