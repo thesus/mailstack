@@ -1,4 +1,4 @@
-version: "3"
+version: "3.5"
 services:
   postfix:
     build: ./postfix
@@ -10,8 +10,11 @@ services:
     networks:
       - internal
       - auth
-    dns:
-      - 8.8.8.8
+    volumes:
+      - type: volume
+        source: certificates
+        target: /etc/certificates
+        read_only: yes
 
   dovecot:
     build: ./dovecot
@@ -21,13 +24,22 @@ services:
       - "143:143"
       - "993:993"
     volumes:
-      - mailboxes:/var/vmail
+      - type: volume
+        source: mailboxes
+        target: /var/vmail
+      - type: volume
+        source: certificates
+        target: /etc/certificates
+        read_only: yes
     networks:
       - internal
       - auth
 
 volumes:
   mailboxes:
+  certificates:
+    external:
+      name: certificates
 
 networks:
   internal:

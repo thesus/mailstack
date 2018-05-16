@@ -17,7 +17,7 @@ smtp      inet  n       -       n       -       -       smtpd
 submission inet n       -       n       -       -       smtpd
 #  -o milter_macro_daemon_name=ORIGINATING
 #smtps     inet  n       -       y       -       -       smtpd
-#  -o syslog_name=postfix/smtps
+        -o smtpd_tls_security_level=encrypt
 #  -o smtpd_tls_wrappermode=yes
 #  -o smtpd_sasl_auth_enable=yes
 #  -o smtpd_reject_unlisted_recipient=no
