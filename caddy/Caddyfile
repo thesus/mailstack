@@ -1,0 +1,9 @@
+:80/SOGo {
+    tls off
+    proxy / sogo:20000/SOGo
+}
+
+:80/SOGo.woa/WebServerResources {
+   tls off
+   root /etc/sogo/resources/
+}

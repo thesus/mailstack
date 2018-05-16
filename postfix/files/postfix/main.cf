@@ -16,7 +16,7 @@ recipient_delimiter =
 inet_interfaces = all
 inet_protocols = all
 
-mynetworks = 127.0.0.0/8 postfix localhost
+mynetworks = 127.0.0.0/8 postfix localhost mailstack_sogo_1.mailstack_internal
 mydestination =
 myorigin =
 

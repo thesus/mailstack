@@ -9,7 +9,7 @@ services:
       - "587:587"
     networks:
       - internal
-      - auth
+      - auth.mailstack.postfix
     volumes:
       - type: volume
         source: certificates
@@ -33,27 +33,68 @@ services:
         read_only: yes
     networks:
       - internal
-      - auth
+      - auth.mailstack.dovecot
 
   sogo:
     build: ./sogo
     user: sogo
     env_file:
       - ./sogo.env
-    ports:
-      - "80:80"
+      - ./database.env
     networks:
       - internal
-      - auth
+      - database
+      - proxy
+      - auth.mailstack.sogo
+    volumes:
+      - type: volume
+        source: sogo-web
+        target: /usr/lib/GNUstep/SOGo/WebServerResources
+
+  postgres:
+    image: postgres
+    restart: always
+    volumes:
+      - type: volume
+        source: sogo-data
+        target: /var/lib/postgresql/data/pgdata
+    env_file:
+      - ./database.env
+    environment:
+      - PGDATA=/var/lib/postgresql/data/pgdata
+    networks:
+      - database
+
+  caddy:
+    build: ./caddy
+    networks:
+      - proxy
+    ports:
+      - "80:80"
+    volumes:
+      - type: volume
+        source: sogo-web
+        target: /etc/sogo/resources
 
 volumes:
   mailboxes:
+  sogo-data:
+  sogo-web:
   certificates:
     external:
       name: certificates
 
 networks:
   internal:
-  auth:
+  database:
+  proxy:
+
+  auth.mailstack.postfix:
     external:
-      name: auth
+      name: auth.mailstack.postfix
+  auth.mailstack.dovecot:
+    external:
+      name: auth.mailstack.dovecot
+  auth.mailstack.sogo:
+    external:
+      name: auth.mailstack.sogo
