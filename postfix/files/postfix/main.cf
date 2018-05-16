@@ -1,0 +1,36 @@
+smtpd_banner = $myhostname ESMT $mail_name (Ubuntu)
+biff = no
+append_dot_mydomain = no
+readme_directory = no
+
+smtpd_relay_restrictions =
+        reject_non_fqdn_recipient
+        reject_unknown_recipient_domain
+        permit_sasl_authenticated
+        permit_mynetworks
+        reject_unauth_destination
+
+postscreen_greet_action = enforce
+
+recipient_delimiter =
+inet_interfaces = all
+inet_protocols = all
+
+mynetworks = 127.0.0.0/8 postfix localhost
+mydestination =
+myorigin =
+
+# TLS
+smtpd_use_tls = no
+
+# Virtual Transport
+virtual_transport = lmtp:[dovecot]:24
+virtual_mailbox_maps = proxy:ldap:/etc/postfix/ldap_virtual_recipients.cf
+
+virtual_mailbox_domains =
+
+# Authentication
+smtpd_sasl_type = dovecot
+smtpd_sasl_path = inet:dovecot:3569
+smtpd_sasl_auth_enable = yes
+smtpd_sasl_security_options = noanonymous

@@ -2,12 +2,18 @@
 
 set -e
 
-envsubst < "/etc/postfix/main.cf.template" > "/etc/postfix/main.cf"
+cp -f /etc/services /var/spool/postfix/etc/services
+cp -f /etc/resolv.conf /var/spool/postfix/etc
+
+postconf -e "myorigin = $POSTFIX_MYORIGIN"
+postconf -e "virtual_mailbox_domains = $POSTFIX_VIRTUAL_MAILBOX_DOMAINS"
 
 postconf -d | grep mail_version
 
 touch /var/log/mail.log
 
 service rsyslog start
+
+cat /etc/postfix/main.cf
 
 tail -f /var/log/mail.log & exec postfix start-fg

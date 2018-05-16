@@ -9,6 +9,9 @@ services:
       - "587:587"
     networks:
       - internal
+      - auth
+    dns:
+      - 8.8.8.8
 
   dovecot:
     build: ./dovecot

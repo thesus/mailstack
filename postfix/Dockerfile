@@ -1,8 +1,8 @@
 FROM debian:buster-slim
 
-RUN apt-get update && apt-get install postfix postfix-ldap gettext rsyslog -y
+RUN apt-get update && apt-get install postfix postfix-ldap gettext rsyslog libsasl2-modules -y
 
-COPY ./main.cf /etc/postfix/main.cf.template
+COPY ./files/postfix/ /etc/postfix
 
 RUN ln -s /run/systemd/journal/dev-log /dev/log
 
