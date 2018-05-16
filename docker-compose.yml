@@ -35,6 +35,17 @@ services:
       - internal
       - auth
 
+  sogo:
+    build: ./sogo
+    user: sogo
+    env_file:
+      - ./sogo.env
+    ports:
+      - "80:80"
+    networks:
+      - internal
+      - auth
+
 volumes:
   mailboxes:
   certificates:
