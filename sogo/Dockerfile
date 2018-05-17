@@ -11,7 +11,7 @@ RUN echo "deb https://packages.inverse.ca/SOGo/nightly/4/debian/ stretch stretch
 RUN mkdir /usr/share/doc/sogo/ \
     && touch /usr/share/doc/sogo/empty.sh \
     && apt-get update \
-    && apt-get install -y sogo sope4.9-gdl1-postgresql
+    && apt-get install -y sogo sogo-activesync libwbxml2-0 sope4.9-gdl1-postgresql
 
 RUN echo '* * * * *   sogo   /usr/sbin/sogo-ealarms-notify 2>/dev/null' > /etc/cron.d/sogo \
     && echo '* * * * *   sogo   /usr/sbin/sogo-tool expire-sessions 60' >> /etc/cron.d/sogo \

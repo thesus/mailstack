@@ -44,12 +44,18 @@ services:
     networks:
       - internal
       - database
+      - cache
       - proxy
       - auth.mailstack.sogo
     volumes:
       - type: volume
         source: sogo-web
         target: /usr/lib/GNUstep/SOGo/WebServerResources
+
+  memcached:
+    image: memcached:alpine
+    networks:
+      - cache
 
   postgres:
     image: postgres
@@ -70,7 +76,7 @@ services:
     networks:
       - proxy
     ports:
-      - "80:80"
+      - "0.0.0.0:80:80"
     volumes:
       - type: volume
         source: sogo-web
@@ -88,6 +94,7 @@ networks:
   internal:
   database:
   proxy:
+  cache:
 
   auth.mailstack.postfix:
     external:

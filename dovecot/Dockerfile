@@ -1,6 +1,7 @@
 FROM debian:buster-slim
 
-RUN apt-get update && apt-get install dovecot-core dovecot-imapd dovecot-lmtpd dovecot-ldap dovecot-sieve dovecot-managesieved gettext -y
+RUN apt-get update && apt-get install dovecot-core dovecot-imapd dovecot-lmtpd \
+    dovecot-ldap dovecot-sieve dovecot-managesieved gettext -y
 
 COPY ./files/dovecot/ /etc/dovecot/
 

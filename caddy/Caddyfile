@@ -1,9 +1,50 @@
+:80 {
+    redir / /SOGo
+    log stdout
+}
+
 :80/SOGo {
-    tls off
-    proxy / sogo:20000/SOGo
+    proxy / sogo:20000/SOGo {
+        header_upstream x-webobjects-server-port 80
+        header_upstream x-webobjects-server-name 10.0.3.1
+        header_upstream x-webobjects-server-url  http://10.0.3.1
+
+        transparent
+        websocket
+    }
+    log stdout
 }
 
 :80/SOGo.woa/WebServerResources {
-   tls off
    root /etc/sogo/resources/
+   log stdout
+}
+
+:80/Microsoft-Server-ActiveSync {
+    proxy / sogo:20000/SOGo/Microsoft-Server-ActiveSync {
+        header_upstream x-webobjects-server-port 80
+        header_upstream x-webobjects-server-name 10.0.3.1
+        header_upstream x-webobjects-server-url  http://10.0.3.1
+
+        transparent
+        websocket
+    }
+
+    log stdout
+}
+
+:80/principals {
+    proxy / sogo:20000/SOGo/dav/ {
+        header_upstream x-webobjects-server-port 80
+        header_upstream x-webobjects-server-name 10.0.3.1
+        header_upstream x-webobjects-server-url  http://10.0.3.1
+
+        transparent
+        websocket
+    }
+}
+
+:80/.well-known {
+    redir /.well-known/caldav /SOGo/dav
+    redir /.well-known/carddav /SOGo/dav
 }
