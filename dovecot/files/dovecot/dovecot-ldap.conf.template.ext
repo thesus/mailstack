@@ -106,7 +106,7 @@ base = $DOVECOT_LDAP_SEARCH_BASE
 #
 # There are also other special fields which can be returned, see
 # http://wiki2.dovecot.org/UserDatabase/ExtraFields
-#user_attrs = homeDirectory=home,uidNumber=uid,gidNumber=gid
+user_attrs =
 
 # Filter for user lookup. Some variables can be used (see
 # http://wiki2.dovecot.org/Variables for full list):
@@ -121,7 +121,7 @@ user_filter = (&(objectClass=inetOrgPerson)(uid=%n))
 #  password: Password, may optionally start with {type}, eg. {crypt}
 # There are also other special fields which can be returned, see
 # http://wiki2.dovecot.org/PasswordDatabase/ExtraFields
-# pass_attrs = uid=user,userPassword=password
+pass_attrs = uid=user,userPassword=password
 
 # If you wish to avoid two LDAP lookups (passdb + userdb), you can use
 # userdb prefetch instead of userdb ldap in dovecot.conf. In that case you'll
