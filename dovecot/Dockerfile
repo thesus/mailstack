@@ -5,6 +5,8 @@ RUN apt-get update && apt-get install dovecot-core dovecot-imapd dovecot-lmtpd \
 
 COPY ./files/dovecot/ /etc/dovecot/
 
+COPY ./files/sieve/ /usr/lib/dovecot/sieve/
+
 RUN ln -s /run/systemd/journal/dev-log /dev/log
 
 COPY ./entrypoint.sh /usr/bin/entrypoint.sh

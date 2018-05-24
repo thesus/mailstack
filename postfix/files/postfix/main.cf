@@ -45,3 +45,12 @@ smtpd_sasl_type = dovecot
 smtpd_sasl_path = inet:dovecot:3569
 smtpd_sasl_auth_enable = yes
 smtpd_sasl_security_options = noanonymous
+
+
+# Spamfiltering and DKIM
+
+smtpd_milters = inet:rspamd:11332
+non_smtpd_milters = inet:rspamd:11332
+milter_protocol = 6
+milter_mail_macros =  i {mail_addr} {client_addr} {client_name} {auth_authen}
+milter_default_action = accept
