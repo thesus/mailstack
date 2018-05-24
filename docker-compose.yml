@@ -82,6 +82,11 @@ services:
         source: sogo-web
         target: /etc/sogo/resources
 
+  rspamd:
+    build: ./rspamd
+    networks:
+      - internal
+
 volumes:
   mailboxes:
   sogo-data:
