@@ -86,6 +86,8 @@ services:
     build: ./rspamd
     networks:
       - internal
+    ports:
+      - "0.0.0.0:11334:11334"
 
 volumes:
   mailboxes:

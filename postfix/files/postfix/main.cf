@@ -17,7 +17,7 @@ inet_interfaces = all
 inet_protocols = all
 
 mynetworks = 127.0.0.0/8 postfix localhost mailstack_sogo_1.mailstack_internal
-mydestination =
+mydestination = $mydomain, localhost.$mydomain localhost
 myorigin =
 
 # TLS
@@ -38,6 +38,7 @@ smtp_tls_CAfile = /etc/ssl/certs/ca-certificates.crt
 # Virtual Transport
 virtual_transport = lmtp:[dovecot]:24
 virtual_mailbox_maps = proxy:ldap:/etc/postfix/ldap_virtual_recipients.cf
+local_recipient_maps = $virtual_mailbox_maps
 virtual_mailbox_domains =
 
 # SASL Authentication
