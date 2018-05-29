@@ -1,4 +1,4 @@
-re ["vnd.dovecot.pipe", "copy", "imapsieve", "environment", "variables"];
+require ["vnd.dovecot.pipe", "copy", "imapsieve", "environment", "variables"];
 
 if environment :matches "imap.mailbox" "*" {
   set "mailbox" "${1}";

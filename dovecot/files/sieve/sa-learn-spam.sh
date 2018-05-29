@@ -1,3 +1,3 @@
 #!/bin/sh
 
-exec /usr/bin/rspamc -h rspamd learn_spam
+exec /usr/bin/curl -s --data-binary @- http://rspamd:11334/learnspam < /dev/stdin
