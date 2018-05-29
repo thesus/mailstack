@@ -1,4 +1,5 @@
 version: "3.5"
+
 services:
   postfix:
     build: ./postfix
@@ -86,19 +87,23 @@ services:
     build: ./rspamd
     networks:
       - internal
-      - rspamd.cache
+      - rspamd.database
     ports:
       - "0.0.0.0:11334:11334"
 
   redis:
     image: redis:latest
+    command: ["redis-server", "--appendonly", "yes"]
     networks:
-      - rspamd.cache
+      - rspamd.database
+    volumes:
+      - rspamd-data:/data
 
 volumes:
   mailboxes:
   sogo-data:
   sogo-web:
+  rspamd-data:
   certificates:
     external:
       name: certificates
@@ -108,7 +113,7 @@ networks:
   database:
   proxy:
   sogo.cache:
-  rspamd.cache:
+  rspamd.database:
 
   auth.mailstack.postfix:
     external:
