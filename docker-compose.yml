@@ -44,7 +44,7 @@ services:
     networks:
       - internal
       - database
-      - cache
+      - sogo.cache
       - proxy
       - auth.mailstack.sogo
     volumes:
@@ -55,7 +55,7 @@ services:
   memcached:
     image: memcached:alpine
     networks:
-      - cache
+      - sogo.cache
 
   postgres:
     image: postgres
@@ -86,8 +86,14 @@ services:
     build: ./rspamd
     networks:
       - internal
+      - rspamd.cache
     ports:
       - "0.0.0.0:11334:11334"
+
+  redis:
+    image: redis:latest
+    networks:
+      - rspamd.cache
 
 volumes:
   mailboxes:
@@ -101,7 +107,8 @@ networks:
   internal:
   database:
   proxy:
-  cache:
+  sogo.cache:
+  rspamd.cache:
 
   auth.mailstack.postfix:
     external:
