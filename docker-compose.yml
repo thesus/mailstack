@@ -46,8 +46,9 @@ services:
       - internal
       - database
       - sogo.cache
-      - proxy
+      - sogo.proxy
       - auth.mailstack.sogo
+      - expose.mailstack.sogo
     volumes:
       - type: volume
         source: sogo-web
@@ -63,7 +64,7 @@ services:
     restart: always
     volumes:
       - type: volume
-        source: sogo-data
+        source: postgres-data
         target: /var/lib/postgresql/data/pgdata
     env_file:
       - ./database.env
@@ -75,7 +76,7 @@ services:
   caddy:
     build: ./caddy
     networks:
-      - proxy
+      - sogo.proxy
     ports:
       - "0.0.0.0:80:80"
     volumes:
@@ -88,8 +89,11 @@ services:
     networks:
       - internal
       - rspamd.database
-    ports:
-      - "0.0.0.0:11334:11334"
+      - expose.mailstack.rspamd
+    env_file:
+      - ./rspamd.env
+    volumes:
+      - rspamd-data:/var/lib/rspamd
 
   redis:
     image: redis:latest
@@ -97,13 +101,14 @@ services:
     networks:
       - rspamd.database
     volumes:
-      - rspamd-data:/data
+      - redis-data:/data
 
 volumes:
   mailboxes:
-  sogo-data:
+  postgres-data:
   sogo-web:
   rspamd-data:
+  redis-data:
   certificates:
     external:
       name: certificates
@@ -111,7 +116,7 @@ volumes:
 networks:
   internal:
   database:
-  proxy:
+  sogo.proxy:
   sogo.cache:
   rspamd.database:
 
@@ -124,3 +129,10 @@ networks:
   auth.mailstack.sogo:
     external:
       name: auth.mailstack.sogo
+
+  expose.mailstack.sogo:
+    external:
+      name: expose.mailstack.sogo
+  expose.mailstack.rspamd:
+    external:
+      name: expose.mailstack.sogo

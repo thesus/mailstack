@@ -12,6 +12,7 @@ chmod -R 770 /var/vmail
 
 sievec /usr/lib/dovecot/sieve/learn-spam.sieve
 sievec /usr/lib/dovecot/sieve/learn-ham.sieve
+sievec /usr/lib/dovecot/sieve/spam-global.sieve
 chmod +x /usr/lib/dovecot/sieve/sa-learn-ham.sh /usr/lib/dovecot/sieve/sa-learn-spam.sh
 
 exec dovecot -F

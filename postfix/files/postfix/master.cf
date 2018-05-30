@@ -10,14 +10,14 @@
 #               (yes)   (yes)   (no)    (never) (100)
 # ==========================================================================
 smtp      inet  n       -       n       -       -       smtpd
+  -o smtpd_sasl_auth_enable=no
 #smtp      inet  n       -       y       -       1       postscreen
 #smtpd     pass  -       -       y       -       -       smtpd
 #dnsblog   unix  -       -       y       -       0       dnsblog
 #tlsproxy  unix  -       -       y       -       0       tlsproxy
 submission inet n       -       n       -       -       smtpd
-#  -o milter_macro_daemon_name=ORIGINATING
-#smtps     inet  n       -       y       -       -       smtpd
-        -o smtpd_tls_security_level=encrypt
+  -o smtpd_tls_security_level=encrypt
+  -o tls_preempt_cipherlist=yes
 #  -o smtpd_tls_wrappermode=yes
 #  -o smtpd_sasl_auth_enable=yes
 #  -o smtpd_reject_unlisted_recipient=no
