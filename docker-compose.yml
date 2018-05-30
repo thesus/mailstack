@@ -64,7 +64,7 @@ services:
     restart: always
     volumes:
       - type: volume
-        source: sogo-data
+        source: postgres-data
         target: /var/lib/postgresql/data/pgdata
     env_file:
       - ./database.env
@@ -90,8 +90,10 @@ services:
       - internal
       - rspamd.database
       - expose.mailstack.rspamd
+    env_file:
+      - ./rspamd.env
     volumes:
-      - dkim:/var/lib/rspamd/dkim/
+      - rspamd-data:/var/lib/rspamd
 
   redis:
     image: redis:latest
@@ -99,16 +101,14 @@ services:
     networks:
       - rspamd.database
     volumes:
-      - rspamd-data:/data
+      - redis-data:/data
 
 volumes:
   mailboxes:
-  sogo-data:
+  postgres-data:
   sogo-web:
-  dkim:
-    external:
-      name: dkim
   rspamd-data:
+  redis-data:
   certificates:
     external:
       name: certificates
