@@ -90,6 +90,8 @@ services:
       - rspamd.database
     ports:
       - "0.0.0.0:11334:11334"
+    volumes:
+      - dkim:/var/lib/rspamd/dkim/
 
   redis:
     image: redis:latest
@@ -103,6 +105,9 @@ volumes:
   mailboxes:
   sogo-data:
   sogo-web:
+  dkim:
+    external:
+      name: dkim
   rspamd-data:
   certificates:
     external:
