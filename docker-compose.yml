@@ -46,8 +46,9 @@ services:
       - internal
       - database
       - sogo.cache
-      - proxy
+      - sogo.proxy
       - auth.mailstack.sogo
+      - expose.mailstack.sogo
     volumes:
       - type: volume
         source: sogo-web
@@ -75,7 +76,7 @@ services:
   caddy:
     build: ./caddy
     networks:
-      - proxy
+      - sogo.proxy
     ports:
       - "0.0.0.0:80:80"
     volumes:
@@ -88,8 +89,7 @@ services:
     networks:
       - internal
       - rspamd.database
-    ports:
-      - "0.0.0.0:11334:11334"
+      - expose.mailstack.rspamd
     volumes:
       - dkim:/var/lib/rspamd/dkim/
 
@@ -116,7 +116,7 @@ volumes:
 networks:
   internal:
   database:
-  proxy:
+  sogo.proxy:
   sogo.cache:
   rspamd.database:
 
@@ -129,3 +129,10 @@ networks:
   auth.mailstack.sogo:
     external:
       name: auth.mailstack.sogo
+
+  expose.mailstack.sogo:
+    external:
+      name: expose.mailstack.sogo
+  expose.mailstack.rspamd:
+    external:
+      name: expose.mailstack.sogo
