@@ -77,8 +77,7 @@ services:
     build: ./caddy
     networks:
       - sogo.proxy
-    ports:
-      - "0.0.0.0:80:80"
+      - expose.mailstack.caddy
     volumes:
       - type: volume
         source: sogo-web
@@ -130,9 +129,9 @@ networks:
     external:
       name: auth.mailstack.sogo
 
-  expose.mailstack.sogo:
+  expose.mailstack.caddy:
     external:
-      name: expose.mailstack.sogo
+      name: expose.mailstack.caddy
   expose.mailstack.rspamd:
     external:
-      name: expose.mailstack.sogo
+      name: expose.mailstack.rspamd
