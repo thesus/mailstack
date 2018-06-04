@@ -10,11 +10,13 @@ cp -a /dev/random /var/spool/postfix/dev/
 
 envsubst < "/etc/postfix/ldap_virtual_recipients.template.cf" > "/etc/postfix/ldap_virtual_recipients.cf"
 
+chmod 755 /etc/postfix
+
 postconf -e "myorigin = $POSTFIX_MYORIGIN"
 postconf -e "virtual_mailbox_domains = $POSTFIX_VIRTUAL_MAILBOX_DOMAINS"
 
 touch /var/log/mail.log
 
-service rsyslog start
+service rsyslog restart
 
 tail -F /var/log/mail.log & exec postfix start-fg

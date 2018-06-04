@@ -20,8 +20,10 @@ RUN echo '* * * * *   sogo   /usr/sbin/sogo-ealarms-notify 2>/dev/null' > /etc/c
 
 COPY ./files/sogo /etc/sogo
 RUN chown -R sogo:sogo /etc/sogo
+RUN chown -R sogo:sogo /var/lib/sogo
 
 COPY ./entrypoint.sh /usr/bin/entrypoint.sh
+RUN chown sogo:sogo /usr/bin/entrypoint.sh
 RUN chmod u+x /usr/bin/entrypoint.sh
 
 ENTRYPOINT ["/usr/bin/entrypoint.sh"]
