@@ -13,7 +13,7 @@ variables:
     script:
         - docker build --pull -t "$CI_REGISTRY_IMAGE/$COMPONENT:$TAG" ./$COMPONENT
         - docker push "$CI_REGISTRY_IMAGE/$COMPONENT:$TAG"
-        - test "$CI_BUILD_REF_SLUG" = "master" && docker tag "$CI_REGISTRY_IMAGE/$COMPONENT:$TAG" "$CI_REGISTRY_IMAGE:latest" && docker push "$CI_REGISTRY_IMAGE:latest"
+        - if [ "$CI_BUILD_REF_SLUG" = "master" ]; then docker tag "$CI_REGISTRY_IMAGE/$COMPONENT:$TAG" "$CI_REGISTRY_IMAGE:latest" && docker push "$CI_REGISTRY_IMAGE:latest"; fi
 
 
 build-docker-image:postfix:
