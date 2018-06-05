@@ -1,0 +1,42 @@
+stages:
+    - build
+
+variables:
+    TAG: $CI_BUILD_REF_SLUG
+
+.build-docker-image:template: &docker-image-template
+    stage: build
+    tags:
+        - docker-cli
+    before_script:
+        - docker login -u gitlab-ci-token -p $CI_BUILD_TOKEN $CI_REGISTRY
+    script:
+        - docker build --pull -t "$CI_REGISTRY_IMAGE/$COMPONENT:$TAG" ./$COMPONENT
+        - docker push "$CI_REGISTRY_IMAGE/$COMPONENT:$TAG"
+        - test "$CI_BUILD_REF_SLUG" = "master" && docker tag "$CI_REGISTRY_IMAGE/$COMPONENT:$TAG" "$CI_REGISTRY_IMAGE:latest" && docker push "$CI_REGISTRY_IMAGE:latest"
+
+
+build-docker-image:postfix:
+    variables:
+        COMPONENT: postfix
+    <<: *docker-image-template
+
+build-docker-image:dovecot:
+    variables:
+        COMPONENT: dovecot
+    <<: *docker-image-template
+
+build-docker-image:sogo:
+    variables:
+        COMPONENT: sogo
+    <<: *docker-image-template
+
+build-docker-image:caddy:
+    variables:
+        COMPONENT: caddy
+    <<: *docker-image-template
+
+build-docker-image:rspamd:
+    variables:
+        COMPONENT: rspamd
+    <<: *docker-image-template
