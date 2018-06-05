@@ -1,4 +1,8 @@
+FROM dev.cryptec.at:5000/infrastructure/dockerize:latest as dockerize
+
 FROM debian:buster-slim
+
+COPY --from=dockerize /usr/local/bin/dockerize /usr/local/bin/dockerize
 
 RUN apt-get update && apt-get install postfix postfix-ldap gettext rsyslog libsasl2-modules -y
 

@@ -1,4 +1,8 @@
+FROM dev.cryptec.at:5000/infrastructure/dockerize:latest as dockerize
+
 FROM debian:stretch-slim
+
+COPY --from=dockerize /usr/local/bin/dockerize /usr/local/bin/dockerize
 
 ARG DEBIAN_FRONTEND=noninteractive
 

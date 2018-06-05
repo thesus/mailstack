@@ -1,6 +1,10 @@
+FROM dev.cryptec.at:5000/infrastructure/dockerize:latest as dockerize
+
 # Lean on https://github.com/vstakhov/rspamd/blob/master/docker/Dockerfile
 
 FROM debian:stretch
+
+COPY --from=dockerize /usr/local/bin/dockerize /usr/local/bin/dockerize
 
 RUN apt-get update && apt-get install -y --no-install-recommends gnupg dirmngr && rm -rf /var/lib/apt/lists/*
 
