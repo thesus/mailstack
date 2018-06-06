@@ -51,7 +51,6 @@ services:
       - sogo.cache
       - sogo.proxy
       - auth.mailstack.sogo
-      - expose.mailstack.sogo
     volumes:
       - type: volume
         source: sogo-web
