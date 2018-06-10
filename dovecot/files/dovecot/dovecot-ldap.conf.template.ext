@@ -17,7 +17,7 @@
 #        by * none
 
 # Space separated list of LDAP hosts to use. host:port is allowed too.
-hosts = $DOVECOT_LDAP_HOST
+hosts = {{ .Env.DOVECOT_LDAP_HOST }}
 
 # LDAP URIs to use. You can use this instead of hosts list. Note that this
 # setting isn't supported by all LDAP libraries.
@@ -25,10 +25,10 @@ hosts = $DOVECOT_LDAP_HOST
 
 # Distinguished Name - the username used to login to the LDAP server.
 # Leave it commented out to bind anonymously (useful with auth_bind=yes).
-dn = $DOVECOT_LDAP_BIND_DN
+dn = {{ .Env.DOVECOT_LDAP_BIND_DN }}
 
 # Password for LDAP server, if dn is specified.
-dnpass = $DOVECOT_LDAP_BIND_PASSWORD
+dnpass = {{ .Env.DOVECOT_LDAP_BIND_PASSWORD }}
 
 # Use SASL binding instead of the simple binding. Note that this changes
 # ldap_version automatically to be 3 if it's lower.
@@ -89,7 +89,7 @@ auth_bind = yes
 
 # LDAP base. %variables can be used here.
 # For example: dc=mail, dc=example, dc=org
-base = $DOVECOT_LDAP_SEARCH_BASE
+base = {{ .Env.DOVECOT_LDAP_SEARCH_BASE }}
 
 # Dereference: never, searching, finding, always
 #deref = never
