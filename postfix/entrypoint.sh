@@ -10,7 +10,6 @@ cp -a /dev/random /var/spool/postfix/dev/
 
 chmod 755 /etc/postfix
 
-touch /var/log/mail.log
-service rsyslog restart
+service rsyslog start
 
-/usr/local/bin/dockerize -template /var/tmp/postfix/:/etc/postfix/ -wait tcp://dovecot:3569 -wait tcp://dovecot:24 -timeout 30s -stdout /var/log/mail.log postfix start-fg
+exec /usr/local/bin/dockerize -template /var/tmp/postfix/:/etc/postfix/ -wait tcp://dovecot:3569 -wait tcp://dovecot:24 -timeout 30s postfix start-fg
