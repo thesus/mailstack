@@ -4,8 +4,15 @@ services:
   postfix:
     image: dev.cryptec.at:5000/infrastructure/mailstack/postfix
     build: ./postfix
-    env_file:
-      - ./postfix.env
+    environment:
+      POSTFIX_MYORIGIN: {{ .domain }}
+      POSTFIX_MYDOMAIN: {{ .domain}}
+      POSTFIX_VIRTUAL_MAILBOX_DOMAINS: {{ .domain }}
+
+      POSTFIX_LDAP_BIND_DN: {{ .postfix.ldap.bind_dn }}
+      POSTFIX_LDAP_BIND_PASSWORD: {{ .postfix.ldap.bind_pw }}
+      POSTFIX_LDAP_SERVER_HOST: {{ .postfix.ldap.server }}
+      POSTFIX_LDAP_DOMAIN: {{ .postfix.ldap.domain }}
     ports:
       - "25:25"
       - "587:587"

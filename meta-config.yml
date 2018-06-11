@@ -1,0 +1,15 @@
+vars:
+  domain:
+    default: example.com
+    comment: Default domain.
+  postfix:
+    default:
+      ldap:
+        bind_dn: 'uid=postfix,ou=Services,dc=example,dc=com'
+        bind_pw: 'apfel'
+        server: 'ldap://ldap:389'
+        domain: 'example.com'
+    comment: All Settings regarding postfix.
+
+files:
+  docker-compose.template.yml: docker-compose.yml
