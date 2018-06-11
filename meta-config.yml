@@ -24,6 +24,13 @@ vars:
         bind_pw: apfel
     comment: Dovecot settings
 
+  rspamd:
+    default:
+      controller:
+        password: ''
+        enable_password: ''
+    comment: Rspamd settings
+
   sogo:
     default:
       ldap:
