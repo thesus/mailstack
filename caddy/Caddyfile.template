@@ -1,9 +1,9 @@
-:80 {
+{{ .Env.ADDRESS }} {
     redir / /SOGo
     log stdout
 }
 
-:80/SOGo {
+{{ .Env.ADDRESS }}/SOGo {
     proxy / sogo:20000/SOGo {
         transparent
         websocket
@@ -11,12 +11,12 @@
     log stdout
 }
 
-:80/SOGo.woa/WebServerResources {
+{{ .Env.ADDRESS }}/SOGo.woa/WebServerResources {
    root /etc/sogo/resources/
    log stdout
 }
 
-:80/Microsoft-Server-ActiveSync {
+{{ .Env.ADDRESS }}/Microsoft-Server-ActiveSync {
     proxy / sogo:20000/SOGo/Microsoft-Server-ActiveSync {
         transparent
         websocket
@@ -25,14 +25,15 @@
     log stdout
 }
 
-:80/principals {
+{{ .Env.ADDRESS }}/principals {
     proxy / sogo:20000/SOGo/dav/ {
         transparent
         websocket
     }
 }
 
-:80/.well-known {
+{{ .Env.ADDRESS }}/.well-known {
+    {{ if eq .Env.CERTIFICATE "self" }}tls /etc/certificates/cert.pem /etc/certificates/privkey.pem{{ end }}
     redir /.well-known/caldav /SOGo/dav
     redir /.well-known/carddav /SOGo/dav
 }

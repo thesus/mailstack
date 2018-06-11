@@ -3,11 +3,25 @@ vars:
     default: example.com
     comment: Default domain.
 
+  address:
+    default: https://example.com
+    comment: Web address
+
   ldap:
     default:
       search_base: ou=People,dc=example,dc=com
       server: ldap://ldap:389
     comment: Commonly shared ldap settings
+
+  ssl:
+    default:
+      certificate: caddy
+    comment: SSL related settings
+
+  caddy:
+    default:
+      exposed: true
+    comment: Caddy available from outside or not?
 
   postfix:
     default:

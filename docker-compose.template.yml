@@ -101,11 +101,25 @@ services:
     build: ./caddy
     networks:
       - sogo.proxy
-      - expose.mailstack.caddy
+      {{- if eq .caddy.exposed false }}- expose.mailstack.caddy{{- end }}
     volumes:
       - type: volume
         source: sogo-web
         target: /etc/sogo/resources
+      {{- if eq .caddy.exposed true }}
+      - type: volume
+        source: certificates
+        target: /etc/certificates
+        read_only: yes
+      {{- end }}
+    {{- if eq .caddy.exposed true }}
+    ports:
+      - "0.0.0.0:80:80"
+      - "0.0.0.0:443:443"
+    {{- end }}
+    environment:
+      ADDRESS: {{ .address }}
+      CERTIFICATE: {{ .ssl.certificate }}
 
   rspamd:
     image: dev.cryptec.at:5000/infrastructure/mailstack/rspamd
