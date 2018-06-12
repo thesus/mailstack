@@ -1,9 +1,20 @@
-{{ .Env.ADDRESS }} {
+{{ define "directive" }}
+{{- if eq .Env.CERTIFICATE "self" }}
+https://
+{{- else }}{{- if eq .Env.CERTIFICATE "caddy" }}
+https://
+{{- else }}
+http://
+{{- end }}
+{{- end }}{{ .Env.ADDRESS }}
+{{- end }}
+
+{{ template "directive" .}} {
     redir / /SOGo
     log stdout
 }
 
-{{ .Env.ADDRESS }}/SOGo {
+{{ template "directive" .}}/SOGo {
     proxy / sogo:20000/SOGo {
         transparent
         websocket
@@ -11,12 +22,12 @@
     log stdout
 }
 
-{{ .Env.ADDRESS }}/SOGo.woa/WebServerResources {
+{{ template "directive" .}}/SOGo.woa/WebServerResources {
    root /etc/sogo/resources/
    log stdout
 }
 
-{{ .Env.ADDRESS }}/Microsoft-Server-ActiveSync {
+{{ template "directive" .}}/Microsoft-Server-ActiveSync {
     proxy / sogo:20000/SOGo/Microsoft-Server-ActiveSync {
         transparent
         websocket
@@ -25,14 +36,14 @@
     log stdout
 }
 
-{{ .Env.ADDRESS }}/principals {
+{{ template "directive" .}}/principals {
     proxy / sogo:20000/SOGo/dav/ {
         transparent
         websocket
     }
 }
 
-{{ .Env.ADDRESS }}/.well-known {
+{{ template "directive" .}}/.well-known {
     {{ if eq .Env.CERTIFICATE "self" }}tls /etc/certificates/cert.pem /etc/certificates/privkey.pem{{ end }}
     redir /.well-known/caldav /SOGo/dav
     redir /.well-known/carddav /SOGo/dav

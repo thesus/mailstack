@@ -119,7 +119,7 @@ services:
     {{- end }}
     environment:
       ADDRESS: {{ .address }}
-      CERTIFICATE: {{ .ssl.certificate }}
+      CERTIFICATE: "{{ .ssl.certificate }}"
 
   rspamd:
     image: dev.cryptec.at:5000/infrastructure/mailstack/rspamd

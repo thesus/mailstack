@@ -4,7 +4,7 @@ vars:
     comment: Default domain.
 
   address:
-    default: https://example.com
+    default: mail.example.com
     comment: Web address
 
   ldap:
@@ -16,7 +16,7 @@ vars:
   ssl:
     default:
       certificate: caddy
-    comment: SSL related settings
+    comment: "SSL related settings. Options: caddy, self, off"
 
   caddy:
     default:
