@@ -1,11 +1,8 @@
 {{ define "directive" }}
-{{- if eq .Env.CERTIFICATE "self" }}
-https://
-{{- else }}{{- if eq .Env.CERTIFICATE "caddy" }}
+{{- if or (eq .Env.CERTIFICATE "self") (eq .Env.CERTIFICATE "caddy") }}
 https://
 {{- else }}
 http://
-{{- end }}
 {{- end }}{{ .Env.ADDRESS }}
 {{- end }}
 

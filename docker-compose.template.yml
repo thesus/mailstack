@@ -169,9 +169,12 @@ networks:
     external:
       name: auth.mailstack.sogo
 
+  {{- if eq .caddy.exposed false }}
   expose.mailstack.caddy:
     external:
       name: expose.mailstack.caddy
+  {{- end }}
+
   expose.mailstack.rspamd:
     external:
       name: expose.mailstack.rspamd
