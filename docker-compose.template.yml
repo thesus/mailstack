@@ -101,7 +101,9 @@ services:
     build: ./caddy
     networks:
       - sogo.proxy
-      {{- if eq .caddy.exposed false }}- expose.mailstack.caddy{{- end }}
+      {{- if eq .caddy.exposed false }}
+      - expose.mailstack.caddy
+      {{- end }}
     volumes:
       - type: volume
         source: sogo-web
@@ -120,6 +122,10 @@ services:
     environment:
       ADDRESS: {{ .address }}
       CERTIFICATE: "{{ .ssl.certificate }}"
+      EXPOSED: "{{ .caddy.exposed }}"
+      {{- if .caddy.exposed }}
+      SERVER_IP: {{ .caddy.ip_address }}
+      {{- end}}
 
   rspamd:
     image: dev.cryptec.at:5000/infrastructure/mailstack/rspamd

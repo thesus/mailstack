@@ -21,7 +21,8 @@ vars:
   caddy:
     default:
       exposed: true
-    comment: Caddy available from outside or not?
+      ip_address: '127.0.0.1'
+    comment: Caddy available from outside or not? Set ip_address only if caddy is exposed
 
   postfix:
     default:
