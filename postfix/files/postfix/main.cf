@@ -23,7 +23,7 @@ myorigin = {{ .Env.POSTFIX_MYORIGIN }}
 # TLS
 smtpd_use_tls = yes
 smtpd_tls_auth_only = yes
-smtpd_tls_cert_file = /etc/certificates/cert.pem
+smtpd_tls_cert_file = /etc/certificates/fullchain.pem
 smtpd_tls_key_file = /etc/certificates/privkey.pem
 smtpd_tls_mandatory_protocols = !SSLv2, !SSLv3
 smtpd_tls_protocols = !SSLv2, !SSLv3
