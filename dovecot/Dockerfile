@@ -7,7 +7,8 @@ COPY --from=dockerize /usr/local/bin/dockerize /usr/local/bin/dockerize
 RUN apt-get update && apt-get install dovecot-core dovecot-imapd dovecot-lmtpd \
     dovecot-ldap dovecot-sieve dovecot-managesieved -y
 
-COPY ./files/dovecot/ /etc/dovecot/
+RUN mkdir /var/tmp/dovecot
+COPY ./files/dovecot/ /var/tmp/dovecot/
 
 # Copy sieve scripts
 COPY ./files/sieve/ /usr/lib/dovecot/sieve/
