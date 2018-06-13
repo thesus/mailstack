@@ -1,5 +1,5 @@
 {{- define "address" -}}
-{{- if or (eq .Env.CERTIFICATE "self") (eq .Env.CERTIFICATE "caddy") -}}
+{{- if and (or (eq .Env.CERTIFICATE "self") (eq .Env.CERTIFICATE "caddy")) (eq .Env.EXPOSED "true") -}}
 https://{{ .Env.ADDRESS -}}
 {{- else -}}
 {{- if eq .Env.EXPOSED "true" -}}
@@ -11,8 +11,10 @@ http://{{ .Env.ADDRESS -}}
 {{- end -}}
 
 {{ define "tls" }}
+    {{- if eq .Env.EXPOSED "true" -}}
     {{- if eq .Env.CERTIFICATE "self" }}tls {{ .Env.CERT_PATH }} {{ .Env.KEY_PATH }}{{ end -}}
     {{- if eq .Env.CERTIFICATE "caddy"}}tls {{ .Env.EMAIL }}{{ end -}}
+    {{- end -}}
 {{- end }}
 
 {{- define "header" -}}
