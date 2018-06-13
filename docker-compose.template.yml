@@ -112,7 +112,6 @@ services:
       - type: volume
         source: certificates
         target: /etc/certificates
-        read_only: yes
       {{- end }}
     {{- if eq .caddy.exposed true }}
     ports:
