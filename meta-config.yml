@@ -1,0 +1,65 @@
+vars:
+  domain:
+    default: example.com
+    comment: Default domain.
+
+  address:
+    default: mail.example.com
+    comment: Web address
+
+  ldap:
+    default:
+      search_base: ou=People,dc=example,dc=com
+      server: ldap://ldap:389
+    comment: Commonly shared ldap settings
+
+  ssl:
+    default:
+      certificate: caddy
+    comment: "SSL related settings. Options: caddy, self, off"
+
+  caddy:
+    default:
+      exposed: true
+      ip_address: '127.0.0.1'
+    comment: Caddy available from outside or not? Set ip_address only if caddy is exposed
+
+  postfix:
+    default:
+      ldap:
+        bind_dn: uid=postfix,ou=Services,dc=example,dc=com
+        bind_pw: apfel
+        domain: example.com
+    comment: All Settings regarding postfix.
+
+  dovecot:
+    default:
+      ldap:
+        bind_dn: uid=dovecot,ou=Services,dc=example,dc=com
+        bind_pw: apfel
+    comment: Dovecot settings
+
+  rspamd:
+    default:
+      controller:
+        password: ''
+        enable_password: ''
+    comment: Rspamd settings
+
+  sogo:
+    default:
+      ldap:
+        bind_dn: uid=sogo,ou=Services,dc=example,dc=com
+        bind_pw: apfel
+      debug: 'NO'
+    comment: SOGo settings
+
+  postgres:
+    default:
+      user: sogo
+      password: apfel
+      db: sogo
+    comment: Database for sogo. All user data such as calendars/addressbooks are stored here.
+
+files:
+  docker-compose.template.yml: docker-compose.yml

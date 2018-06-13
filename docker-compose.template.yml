@@ -4,8 +4,16 @@ services:
   postfix:
     image: dev.cryptec.at:5000/infrastructure/mailstack/postfix
     build: ./postfix
-    env_file:
-      - ./postfix.env
+    environment:
+      POSTFIX_MYORIGIN: {{ .domain }}
+      POSTFIX_MYDOMAIN: {{ .domain}}
+      POSTFIX_VIRTUAL_MAILBOX_DOMAINS: {{ .domain }}
+
+      POSTFIX_LDAP_BIND_DN: {{ .postfix.ldap.bind_dn }}
+      POSTFIX_LDAP_BIND_PASSWORD: {{ .postfix.ldap.bind_pw }}
+      POSTFIX_LDAP_SEARCH_BASE: {{ .ldap.search_base }}
+      POSTFIX_LDAP_HOST: {{ .ldap.server }}
+      POSTFIX_LDAP_DOMAIN: {{ .postfix.ldap.domain }}
     ports:
       - "25:25"
       - "587:587"
@@ -21,8 +29,11 @@ services:
   dovecot:
     image: dev.cryptec.at:5000/infrastructure/mailstack/dovecot
     build: ./dovecot
-    env_file:
-      - ./dovecot.env
+    environment:
+      DOVECOT_LDAP_BIND_DN: {{ .dovecot.ldap.bind_dn }}
+      DOVECOT_LDAP_BIND_PASSWORD: {{ .dovecot.ldap.bind_pw }}
+      DOVECOT_LDAP_SEARCH_BASE: {{ .ldap.search_base }}
+      DOVECOT_LDAP_HOST: {{ .ldap.server }}
     ports:
       - "143:143"
       - "993:993"
@@ -42,9 +53,18 @@ services:
     image: dev.cryptec.at:5000/infrastructure/mailstack/sogo
     build: ./sogo
     user: sogo
-    env_file:
-      - ./sogo.env
-      - ./database.env
+    environment:
+      SOGO_MAIL_DOMAIN: {{ .domain }}
+
+      SOGO_LDAP_BIND_DN: {{ .sogo.ldap.bind_dn }}
+      SOGO_LDAP_BIND_PASSWORD: {{ .sogo.ldap.bind_pw }}
+      SOGO_LDAP_BASE_DN: {{ .ldap.search_base }}
+
+      ENABLE_DEBUG: "{{ .sogo.debug }}"
+
+      POSTGRES_USER: {{ .postgres.user }}
+      POSTGRES_PASSWORD: {{ .postgres.password }}
+      POSTGRES_DB: {{ .postgres.db }}
     networks:
       - internal
       - database
@@ -68,10 +88,11 @@ services:
       - type: volume
         source: postgres-data
         target: /var/lib/postgresql/data/pgdata
-    env_file:
-      - ./database.env
     environment:
-      - PGDATA=/var/lib/postgresql/data/pgdata
+      POSTGRES_USER: {{ .postgres.user }}
+      POSTGRES_PASSWORD: {{ .postgres.password }}
+      POSTGRES_DB: {{ .postgres.db }}
+      PGDATA: /var/lib/postgresql/data/pgdata
     networks:
       - database
 
@@ -80,11 +101,30 @@ services:
     build: ./caddy
     networks:
       - sogo.proxy
+      {{- if eq .caddy.exposed false }}
       - expose.mailstack.caddy
+      {{- end }}
     volumes:
       - type: volume
         source: sogo-web
         target: /etc/sogo/resources
+      {{- if eq .caddy.exposed true }}
+      - type: volume
+        source: certificates
+        target: /etc/certificates
+      {{- end }}
+    {{- if eq .caddy.exposed true }}
+    ports:
+      - "0.0.0.0:80:80"
+      - "0.0.0.0:443:443"
+    {{- end }}
+    environment:
+      ADDRESS: {{ .address }}
+      CERTIFICATE: "{{ .ssl.certificate }}"
+      EXPOSED: "{{ .caddy.exposed }}"
+      {{- if .caddy.exposed }}
+      SERVER_IP: {{ .caddy.ip_address }}
+      {{- end}}
 
   rspamd:
     image: dev.cryptec.at:5000/infrastructure/mailstack/rspamd
@@ -93,8 +133,9 @@ services:
       - internal
       - rspamd.database
       - expose.mailstack.rspamd
-    env_file:
-      - ./rspamd.env
+    environment:
+      RSPAMD_WEBINTERFACE_PASSWORD: {{ .rspamd.controller.password }}
+      RSPAMD_WEBINTERFACE_ENABLE_PASSWORD: {{ .rspamd.controller.enable_password }}
     volumes:
       - rspamd-data:/var/lib/rspamd
 
@@ -133,9 +174,12 @@ networks:
     external:
       name: auth.mailstack.sogo
 
+  {{- if eq .caddy.exposed false }}
   expose.mailstack.caddy:
     external:
       name: expose.mailstack.caddy
+  {{- end }}
+
   expose.mailstack.rspamd:
     external:
       name: expose.mailstack.rspamd
