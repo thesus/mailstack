@@ -16,12 +16,15 @@ vars:
   ssl:
     default:
       certificate: caddy
+      cert_path: /etc/certificates/fullchain.pem
+      key_path: /etc/certificates/privkey.pem
     comment: "SSL related settings. Options: caddy, self, off"
 
   caddy:
     default:
       exposed: true
       ip_address: '127.0.0.1'
+      email: "admin@example.com"
     comment: Caddy available from outside or not? Set ip_address only if caddy is exposed
 
   postfix:

@@ -11,7 +11,8 @@ http://{{ .Env.ADDRESS -}}
 {{- end -}}
 
 {{ define "tls" }}
-    {{- if eq .Env.CERTIFICATE "self" }}tls /etc/certificates/fullchain.pem /etc/certificates/privkey.pem{{ end }}
+    {{- if eq .Env.CERTIFICATE "self" }}tls {{ .Env.CERT_PATH }} {{ .Env.KEY_PATH }}{{ end -}}
+    {{- if eq .Env.CERTIFICATE "caddy"}}tls {{ .Env.EMAIL }}{{ end -}}
 {{- end }}
 
 {{- define "header" -}}
@@ -24,17 +25,17 @@ http://{{ .Env.ADDRESS -}}
 {{- end -}}
 
 {{ template "address" .}} {
-    {{- template "tls" .}}
+    {{ template "tls" .}}
 
     redir / /SOGo/
     log stdout
 }
 
 {{ template "address" .}}/SOGo {
-    {{- template "tls" .}}
+    {{ template "tls" .}}
 
     proxy / sogo:20000/SOGo {
-        {{- template "header" .}}
+        {{ template "header" .}}
 
         transparent
         websocket
@@ -44,17 +45,17 @@ http://{{ .Env.ADDRESS -}}
 }
 
 {{ template "address" .}}/SOGo.woa/WebServerResources {
-   {{- template "tls" .}}
+   {{ template "tls" .}}
 
    root /etc/sogo/resources/
    log stdout
 }
 
 {{ template "address" .}}/Microsoft-Server-ActiveSync {
-    {{- template "tls" .}}
+    {{ template "tls" .}}
 
     proxy / sogo:20000/SOGo/Microsoft-Server-ActiveSync {
-        {{- template "header" .}}
+        {{ template "header" .}}
 
         transparent
         websocket
@@ -64,10 +65,10 @@ http://{{ .Env.ADDRESS -}}
 }
 
 {{ template "address" .}}/principals {
-    {{- template "tls" .}}
+    {{ template "tls" .}}
 
     proxy / sogo:20000/SOGo/dav/ {
-        {{- template "header" .}}
+        {{ template "header" .}}
 
         transparent
         websocket
@@ -75,7 +76,7 @@ http://{{ .Env.ADDRESS -}}
 }
 
 {{ template "address" .}}/.well-known {
-    {{- template "tls" .}}
+    {{ template "tls" .}}
 
     redir /.well-known/caldav /SOGo/dav
     redir /.well-known/carddav /SOGo/dav

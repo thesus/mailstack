@@ -1,5 +1,16 @@
 version: "3.5"
 
+{{ define "certificates" }}
+{{- if eq .ssl.certificate "caddy" -}}
+      {{ $base_path := print "/etc/certificates/acme/acme-v02.api.letsencrypt.org/sites/" .address "/ " .address }}
+      CERT_PATH: {{ $base_path }}.crt
+      KEY_PATH: {{ $base_path }}.key
+{{- else -}}
+      CERT_PATH: {{ with .ssl.cert_path }}{{ . }}{{ else }}/etc/certificates/fullchain.pem{{ end }}
+      KEY_PATH: {{ with .ssl.key_path }}{{ . }}{{ else }}/etc/certificates/privkey.pem{{ end }}
+{{- end -}}
+{{- end -}}
+
 services:
   postfix:
     image: dev.cryptec.at:5000/infrastructure/mailstack/postfix
@@ -8,12 +19,12 @@ services:
       POSTFIX_MYORIGIN: {{ .domain }}
       POSTFIX_MYDOMAIN: {{ .domain}}
       POSTFIX_VIRTUAL_MAILBOX_DOMAINS: {{ .domain }}
-
       POSTFIX_LDAP_BIND_DN: {{ .postfix.ldap.bind_dn }}
       POSTFIX_LDAP_BIND_PASSWORD: {{ .postfix.ldap.bind_pw }}
       POSTFIX_LDAP_SEARCH_BASE: {{ .ldap.search_base }}
       POSTFIX_LDAP_HOST: {{ .ldap.server }}
       POSTFIX_LDAP_DOMAIN: {{ .postfix.ldap.domain }}
+      {{ template "certificates" .}}
     ports:
       - "25:25"
       - "587:587"
@@ -34,6 +45,7 @@ services:
       DOVECOT_LDAP_BIND_PASSWORD: {{ .dovecot.ldap.bind_pw }}
       DOVECOT_LDAP_SEARCH_BASE: {{ .ldap.search_base }}
       DOVECOT_LDAP_HOST: {{ .ldap.server }}
+      {{ template "certificates" .}}
     ports:
       - "143:143"
       - "993:993"
@@ -125,6 +137,10 @@ services:
       {{- if .caddy.exposed }}
       SERVER_IP: {{ .caddy.ip_address }}
       {{- end}}
+      {{- if and .caddy.exposed (eq .ssl.certificate "caddy")}}
+      EMAIL: {{ .caddy.email }}
+      {{- end }}
+      {{ template "certificates" .}}
 
   rspamd:
     image: dev.cryptec.at:5000/infrastructure/mailstack/rspamd
