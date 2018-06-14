@@ -45,7 +45,6 @@ services:
       DOVECOT_LDAP_BIND_PASSWORD: {{ .dovecot.ldap.bind_pw }}
       DOVECOT_LDAP_SEARCH_BASE: {{ .ldap.search_base }}
       DOVECOT_LDAP_HOST: {{ .ldap.server }}
-      ADDRESS: {{ .address }}
       {{ template "certificates" .}}
     ports:
       - "143:143"
