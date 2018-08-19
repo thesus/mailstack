@@ -1,2 +1,8 @@
+# Ignore docker-compose since it should be generated with config-management
 docker-compose.yml
+
+# Ignore custom configurations
 config.yml
+
+# Ignore virtual environments (for documentation)
+venv
