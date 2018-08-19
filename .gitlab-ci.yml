@@ -46,7 +46,7 @@ build-docker-image:rspamd:
 pages:
   tags:
     - docker
-  image: python3
+  image: python:3
   stage: deploy
   before_script:
     - pip install -r docs/requirements.txt
