@@ -24,7 +24,7 @@ services:
       POSTFIX_LDAP_BIND_PASSWORD: {{ .postfix.ldap.bind_pw }}
       POSTFIX_LDAP_SEARCH_BASE: {{ .ldap.search_base }}
       POSTFIX_LDAP_HOST: {{ .ldap.server }}
-      POSTFIX_LDAP_DOMAIN: {{ .postfix.ldap.domain }}
+      POSTFIX_LDAP_DOMAIN: {{ .domain }}
       {{ template "certificates" .}}
     ports:
       - "25:25"
@@ -45,7 +45,7 @@ services:
       DOVECOT_LDAP_BIND_DN: {{ .dovecot.ldap.bind_dn }}
       DOVECOT_LDAP_BIND_PASSWORD: {{ .dovecot.ldap.bind_pw }}
       DOVECOT_LDAP_SEARCH_BASE: {{ .ldap.search_base }}
-      DOVECOT_LDAP_HOST: {{ .dovecot.ldap.server }}
+      DOVECOT_LDAP_HOST: {{ if .ldap.tls }}ldaps://{{ else }}ldap://{{ end }}{{ .ldap.server }}
       {{ template "certificates" .}}
     ports:
       - "143:143"
