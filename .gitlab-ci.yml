@@ -1,5 +1,6 @@
 stages:
     - build
+    - deploy
 
 variables:
     TAG: $CI_BUILD_REF_SLUG
@@ -40,3 +41,21 @@ build-docker-image:rspamd:
     variables:
         COMPONENT: rspamd
     <<: *docker-image-template
+
+
+pages:
+  tags:
+    - docker
+  image: python:3
+  stage: deploy
+  before_script:
+    - pip install -r docs/requirements.txt
+    - cd docs
+  script:
+    - make html
+    - mv build/html ../public
+  artifacts:
+    paths:
+      - public
+  only:
+    - master
