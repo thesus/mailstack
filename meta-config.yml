@@ -45,8 +45,8 @@ vars:
   rspamd:
     default:
       controller:
-        password: ''
-        enable_password: ''
+        password: none
+        enable_password: none
     comment: Rspamd settings
 
   sogo:

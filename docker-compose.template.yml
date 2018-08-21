@@ -151,8 +151,9 @@ services:
       - rspamd.database
       - expose.mailstack.rspamd
     environment:
-      RSPAMD_WEBINTERFACE_PASSWORD: "{{ .rspamd.controller.password }}"
-      RSPAMD_WEBINTERFACE_ENABLE_PASSWORD: "{{ .rspamd.controller.enable_password }}"
+      # Because rspamd takes a hashed password all dollarsigns need to be escaped
+      RSPAMD_WEBINTERFACE_PASSWORD: "{{ replace .rspamd.controller.password '$' '$$' }}"
+      RSPAMD_WEBINTERFACE_ENABLE_PASSWORD: "{{ replace .rspamd.controller.enable_password '$' '$$' }}"
     volumes:
       - rspamd-data:/var/lib/rspamd
 
