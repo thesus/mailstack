@@ -130,6 +130,10 @@ services:
     ports:
       - "0.0.0.0:80:80"
       - "0.0.0.0:443:443"
+      # If no domain is set, the webinterface is enabled and not directly published
+      {{-if and (not rspamd.webinterface.domain) (and rspamd.webinterface.enable (eq rspamd.webinterface.publish false)) }}
+      - "0.0.0.0:11334:11334"
+      {{- end}}
     {{- end }}
     environment:
       ADDRESS: {{ .address }}
@@ -143,13 +147,24 @@ services:
       {{- end }}
       {{ template "certificates" .}}
 
+      {{-if and rspamd.webinterface.domain (and rspamd.webinterface.enable (eq rspamd.webinterface.publish false)) }}
+      RSPAMD_DOMAIN: {{ rspamd.webinterface.domain }}
+      {{- end}}
+
   rspamd:
     image: dev.cryptec.at:5000/infrastructure/mailstack/rspamd
     build: ./rspamd
     networks:
+      # Connection to dovecot and postfix
       - internal
+       # Connection to redis
       - rspamd.database
+      {{- if and .rspamd.webinterface.enable (eq rspamd.webinterface.publish false) }}
+      - rspamd.proxy
+      {{- end }}
+      {{- if and .rspamd.webinterface.enable .rspamd.webinterface.publish }}
       - expose.mailstack.rspamd
+      {{- end }}
     environment:
       # Because rspamd takes a hashed password all dollarsigns need to be escaped
       RSPAMD_WEBINTERFACE_PASSWORD: "{{ replace .rspamd.controller.password '$' '$$' }}"
@@ -181,6 +196,9 @@ networks:
   sogo.proxy:
   sogo.cache:
   rspamd.database:
+  {{- if and rspamd.webinterface.enable  (eq .rspamd.webinterface.publish false)) }}
+  rspamd.proxy:
+  {{- end }}
 
   auth.mailstack.postfix:
     external:
@@ -198,6 +216,8 @@ networks:
       name: expose.mailstack.caddy
   {{- end }}
 
+  {{- if and .rspamd.webinterface.enable .rspamd.webinterface.publish }}
   expose.mailstack.rspamd:
     external:
       name: expose.mailstack.rspamd
+  {{- end }}
