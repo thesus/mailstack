@@ -47,6 +47,10 @@ vars:
       controller:
         password: none
         enable_password: none
+      webinterface:
+        enable: true
+        publish: false
+        domain: rspamd.example.com
     comment: Rspamd settings
 
   sogo:

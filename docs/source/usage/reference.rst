@@ -40,7 +40,7 @@ Don't worry about escaping chars, ``config-management`` will do that for you.
 
 The Webinterface is enabled by default and also served by caddy. To disabled it, simply change ``rspamd.webinterface.enable`` to ``false``.
 If you want to use your own reverse proxy, set ``rspamd.webinterface.publish`` to ``true``. Rspamd is then attached to the ``expose.mailstack.rspamd`` network.
-Exposing the interface directly isn't possible due to security concerns. We strongly advise against running the Webinterface without propper TLS.
+Exposing the webinterface directly isn't possible due to security concerns. We strongly advise against running the Webinterface without propper TLS.
 If you use caddy as a reverse proxy and certificate source (``ssl.certificate: caddy``) you need to set a valid Domain (``rspamd.webinterface.domain``).
 In case the certificate source is set to ``self``, and no domain is specified, caddy exposes rspamd on it's standardport ``11334`` otherwise it'll be published on port ``443``.
 
@@ -53,3 +53,5 @@ Here's a quick example configuration with caddy as the reverse proxy.
       enable: true
       publish: false
       domain: rspamd.example.com
+
+.. image:: ./rspamd_graph.svg
