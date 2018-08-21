@@ -83,3 +83,17 @@ http://{{ .Env.ADDRESS -}}
     redir /.well-known/caldav /SOGo/dav
     redir /.well-known/carddav /SOGo/dav
 }
+
+{{- if .Env.RSPAMD_PROXY }}
+{{- if .Env.RSPAMD_DOMAIN }}
+  {{ .Env.RSPAMD_DOMAIN }}
+{{- else }}
+:11334 {
+  {{ template "tls" .}}
+
+  proxy / rspamd:11334/ {
+    transparent
+    websocket
+  }
+}
+{{- end }}

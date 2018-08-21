@@ -147,8 +147,11 @@ services:
       {{- end }}
       {{ template "certificates" .}}
 
-      {{- if and .rspamd.webinterface.domain (and .rspamd.webinterface.enable (eq .rspamd.webinterface.publish false)) }}
-      RSPAMD_DOMAIN: {{ .rspamd.webinterface.domain }}
+      {{- if and .rspamd.webinterface.enable (eq .rspamd.webinterface.publish false)) }}
+        {{- if and .rspamd.webinterface.domain}}
+        RSPAMD_DOMAIN: {{ .rspamd.webinterface.domain }}
+        {{- end }}
+        RSPAMD_PROXY: "true"
       {{- end}}
 
   rspamd:
