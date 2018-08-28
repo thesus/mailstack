@@ -10,8 +10,9 @@ vars:
   ldap:
     default:
       search_base: ou=People,dc=example,dc=com
-      server: ldap://ldap:389
-    comment: Commonly shared ldap settings
+      server: ldap:389
+      tls: false
+    comment: Commonly shared ldap settings, don't set ldap protocol here.
 
   ssl:
     default:
@@ -32,7 +33,6 @@ vars:
       ldap:
         bind_dn: uid=postfix,ou=Services,dc=example,dc=com
         bind_pw: apfel
-        domain: example.com
     comment: All Settings regarding postfix.
 
   dovecot:
@@ -40,14 +40,17 @@ vars:
       ldap:
         bind_dn: uid=dovecot,ou=Services,dc=example,dc=com
         bind_pw: apfel
-        server: ldap:389
     comment: Dovecot settings
 
   rspamd:
     default:
       controller:
-        password: ''
-        enable_password: ''
+        password: none
+        enable_password: none
+      webinterface:
+        enable: true
+        publish: false
+        domain: rspamd.example.com
     comment: Rspamd settings
 
   sogo:

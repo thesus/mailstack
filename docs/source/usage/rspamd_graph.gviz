@@ -1,0 +1,99 @@
+# http://www.graphviz.org/content/cluster
+
+digraph G {
+    node [shape=Square];
+
+	start -> enable_true;
+	start -> enable_false;
+
+	enable_false -> disabled;
+	enable_true -> publish;
+
+	publish -> publish_true;
+	publish -> publish_false;
+
+    publish_true -> published;
+
+    publish_false -> domain;
+
+    domain -> domain_set;
+    domain -> domain_unset;
+
+    domain_set -> set;
+
+    domain_unset -> unset_self;
+
+    start [label="rspamd.webinterface.enable"]
+    enable_true, publish_true [label="true"]
+    enable_false, publish_false [label="false"]
+
+    disabled [shape=none, margin=0, label=<
+        <table border="0" cellborder="1" cellspacing="0" cellpadding="4">
+            <tr>
+                <td>Connections (caddy)</td>
+                <td>none</td>
+            </tr>
+            <tr>
+                <td>Networks (rspamd)</td>
+                <td>none</td>
+            </tr>
+        </table>
+    >];
+
+    publish [label="rspamd.webinterface.publish"];
+
+    published [shape=none, margin=0, label=<
+        <table border="0" cellborder="1" cellspacing="0" cellpadding="4">
+            <tr>
+                <td>Connections (caddy)</td>
+                <td>none</td>
+            </tr>
+            <tr>
+                <td>Networks (rspamd)</td>
+                <td>expose.mailstack.rspamd</td>
+            </tr>
+            <tr>
+                <td>Comment</td>
+                <td>Rspamd reachable on port 11334</td>
+            </tr>
+        </table>
+    >];
+
+    domain [label="rspamd.webinterface.domain"];
+    domain_set [label="rspamd.example.com"];
+    domain_unset [label="none"];
+
+    set [shape=none, margin=0, label=<
+        <table border="0" cellborder="1" cellspacing="0" cellpadding="4">
+            <tr>
+                <td colspan="2">ssl.certificate: 'self' or ssl.certificate: 'caddy'</td>
+            </tr>
+            <tr>
+                <td>Connections (caddy)</td>
+                <td>rspamd.example.com:80, rspamd.examle.com:443</td>
+
+            </tr>
+            <tr>
+                <td>Networks (rspamd)</td>
+                <td>none</td>
+            </tr>
+        </table>
+    >];
+
+    unset_self [shape=none, margin=0, label=<
+        <table border="0" cellborder="1" cellspacing="0" cellpadding="4">
+            <tr>
+                <td colspan="2">ssl.certificate: 'self'</td>
+            </tr>
+            <tr>
+                <td>Connections (caddy)</td>
+                <td>0.0.0.0:11334</td>
+
+            </tr>
+            <tr>
+                <td>Networks (rspamd)</td>
+                <td>none</td>
+            </tr>
+        </table>
+    >];
+}
