@@ -16,6 +16,8 @@ services:
   postfix:
     image: dev.cryptec.at:5000/infrastructure/mailstack/postfix
     build: ./postfix
+    labels: &labels
+      at.cryptec.dev.infrastructure.mailstack.version: "0.1.0"
     environment:
       POSTFIX_MYORIGIN: {{ .domain }}
       POSTFIX_MYDOMAIN: {{ .domain}}
@@ -41,6 +43,8 @@ services:
   dovecot:
     image: dev.cryptec.at:5000/infrastructure/mailstack/dovecot
     build: ./dovecot
+    labels:
+      <<: *labels
     environment:
       DOVECOT_LDAP_BIND_DN: {{ .dovecot.ldap.bind_dn }}
       DOVECOT_LDAP_BIND_PASSWORD: {{ .dovecot.ldap.bind_pw }}
@@ -66,6 +70,8 @@ services:
     image: dev.cryptec.at:5000/infrastructure/mailstack/sogo
     build: ./sogo
     user: sogo
+    labels:
+      <<: *labels
     environment:
       SOGO_MAIL_DOMAIN: {{ .domain }}
 
@@ -91,11 +97,15 @@ services:
 
   memcached:
     image: memcached:alpine
+    labels:
+      <<: *labels
     networks:
       - sogo.cache
 
   postgres:
     image: postgres
+    labels:
+      <<: *labels
     restart: always
     volumes:
       - type: volume
@@ -112,6 +122,8 @@ services:
   caddy:
     image: dev.cryptec.at:5000/infrastructure/mailstack/caddy
     build: ./caddy
+    labels:
+      <<: *labels
     networks:
       - sogo.proxy
       {{- if eq .caddy.exposed false }}
@@ -157,6 +169,8 @@ services:
   rspamd:
     image: dev.cryptec.at:5000/infrastructure/mailstack/rspamd
     build: ./rspamd
+    labels:
+      <<: *labels
     networks:
       {{/* Connection to dovecot and postfix */}}
       - internal
@@ -178,6 +192,8 @@ services:
   redis:
     image: redis:latest
     command: ["redis-server", "--appendonly", "yes"]
+    labels:
+      <<: *labels
     networks:
       - rspamd.database
     volumes:
