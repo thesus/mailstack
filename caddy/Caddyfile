@@ -1,21 +1,26 @@
 {{- define "address" -}}
-{{- if and (or (eq .Env.CERTIFICATE "self") (eq .Env.CERTIFICATE "caddy")) (eq .Env.EXPOSED "true") -}}
-https://{{ .Env.ADDRESS -}}
-{{- else -}}
-{{- if eq .Env.EXPOSED "true" -}}
-http://{{ .Env.ADDRESS -}}
-{{- else -}}
-:80
-{{- end -}}
-{{- end -}}
+    {{- if and (or (eq .Env.CERTIFICATE "self") (eq .Env.CERTIFICATE "caddy")) (eq .Env.EXPOSED "true") -}}
+        https://{{ .Env.ADDRESS -}}
+    {{- else -}}
+        {{- if eq .Env.EXPOSED "true" -}}
+            http://{{ .Env.ADDRESS -}}
+        {{- else -}}
+            :80
+        {{- end -}}
+    {{- end -}}
 {{- end -}}
 
-{{ define "tls" }}
+{{- define "tls" -}}
     {{- if eq .Env.EXPOSED "true" -}}
-    {{- if eq .Env.CERTIFICATE "self" }}tls {{ .Env.CERT_PATH }} {{ .Env.KEY_PATH }}{{ end -}}
-    {{- if eq .Env.CERTIFICATE "caddy"}}tls {{ .Env.EMAIL }}{{ end -}}
+        {{- if eq .Env.CERTIFICATE "self" -}}
+            tls {{ .Env.CERT_PATH }} {{ .Env.KEY_PATH }}
+        {{- end -}}
+        {{- if eq .Env.CERTIFICATE "caddy" -}}
+            tls {{ .Env.EMAIL }}
+        {{- end -}}
     {{- end -}}
-{{- end }}
+{{- end -}}
+
 
 {{- define "header" -}}
     {{- if eq .Env.EXPOSED "true" -}}
@@ -23,9 +28,13 @@ http://{{ .Env.ADDRESS -}}
         {{- if or (eq .Env.CERTIFICATE "self") (eq .Env.CERTIFICATE "caddy") }} 443{{- else }} 80{{- end }}
         header_upstream x-webobjects-server-name {{ .Env.SERVER_IP }}
         header_upstream x-webobjects-server-url {{ template "address" .}}
-    {{- end -}}
+    {{- end }}
+        transparent
+        websocket
 {{- end -}}
 
+
+{{/* Section used by SoGo */}}
 {{ template "address" .}} {
     {{ template "tls" .}}
 
@@ -38,9 +47,6 @@ http://{{ .Env.ADDRESS -}}
 
     proxy / sogo:20000/SOGo {
         {{ template "header" .}}
-
-        transparent
-        websocket
     }
 
     log stdout
@@ -58,9 +64,6 @@ http://{{ .Env.ADDRESS -}}
 
     proxy / sogo:20000/SOGo/Microsoft-Server-ActiveSync {
         {{ template "header" .}}
-
-        transparent
-        websocket
     }
 
     log stdout
@@ -71,10 +74,9 @@ http://{{ .Env.ADDRESS -}}
 
     proxy / sogo:20000/SOGo/dav/ {
         {{ template "header" .}}
-
-        transparent
-        websocket
     }
+
+    log stdout
 }
 
 {{ template "address" .}}/.well-known {
@@ -84,16 +86,18 @@ http://{{ .Env.ADDRESS -}}
     redir /.well-known/carddav /SOGo/dav
 }
 
-{{- if .Env.RSPAMD_PROXY }}
-{{- if .Env.RSPAMD_DOMAIN }}
-  {{ .Env.RSPAMD_DOMAIN }}
-{{- else }}
-:11334 {
-  {{ template "tls" .}}
 
-  proxy / rspamd:11334/ {
-    transparent
-    websocket
-  }
-}
+{{/* Section used by rspamd */}}
+{{ if .Env.RSPAMD_PROXY -}}
+    {{- if .Env.RSPAMD_DOMAIN -}}
+        {{ .Env.RSPAMD_DOMAIN }}
+    {{- else }}
+        :11334
+    {{- end }} {
+        {{ template "tls" .}}
+        proxy / rspamd:11334/ {
+            transparent
+            websocket
+        }
+    }
 {{- end }}
