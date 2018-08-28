@@ -1,33 +1,29 @@
 {{- define "address" -}}
-    {{- if and (or (eq .Env.CERTIFICATE "self") (eq .Env.CERTIFICATE "caddy")) (eq .Env.EXPOSED "true") -}}
-        https://{{ .Env.ADDRESS -}}
+    {{- if eq .Env.INTERNAL "false" -}}
+        {{ .Env.ADDRESS -}}
     {{- else -}}
-        {{- if eq .Env.EXPOSED "true" -}}
-            http://{{ .Env.ADDRESS -}}
-        {{- else -}}
-            :80
-        {{- end -}}
+        :80
     {{- end -}}
 {{- end -}}
 
 {{- define "tls" -}}
-    {{- if eq .Env.EXPOSED "true" -}}
+    {{- if eq .Env.INTERNAL "false" -}}
         {{- if eq .Env.CERTIFICATE "self" -}}
             tls {{ .Env.CERT_PATH }} {{ .Env.KEY_PATH }}
         {{- end -}}
         {{- if eq .Env.CERTIFICATE "caddy" -}}
             tls {{ .Env.EMAIL }}
+            {{- /* Add magic to split tls cert here */ -}}
         {{- end -}}
     {{- end -}}
 {{- end -}}
 
 
 {{- define "header" -}}
-    {{- if eq .Env.EXPOSED "true" -}}
-        header_upstream x-webobjects-server-port
-        {{- if or (eq .Env.CERTIFICATE "self") (eq .Env.CERTIFICATE "caddy") }} 443{{- else }} 80{{- end }}
+    {{- if eq .Env.INTERNAL "false" -}}
+        header_upstream x-webobjects-server-port 443
         header_upstream x-webobjects-server-name {{ .Env.SERVER_IP }}
-        header_upstream x-webobjects-server-url {{ template "address" .}}
+        header_upstream x-webobjects-server-url https://{{ .Env.ADDRESS }}
     {{- end }}
         transparent
         websocket

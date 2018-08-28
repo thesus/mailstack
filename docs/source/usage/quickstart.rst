@@ -48,7 +48,7 @@ Settings overview
 +---------------------------------------+--------------------------------------+----------------------------------------------------------------------------------------------------------------------+
 | ``ldap.search_base``                  | ``ou=People,dc=example,dc=com``      | User objects will be searched within this LDAP node.                                                                 |
 +---------------------------------------+--------------------------------------+----------------------------------------------------------------------------------------------------------------------+
-| ``ldap.server```                      | ``ldap://ldap:389``                  | URL of the LDAP server used for authentication.                                                                      |
+| ``ldap.server``                       | ``ldap://ldap:389``                  | URL of the LDAP server used for authentication.                                                                      |
 +---------------------------------------+--------------------------------------+----------------------------------------------------------------------------------------------------------------------+
 | ``ssl.certificate``                   | ``caddy``                            | Set this to ``caddy`` if you want Caddy to take care of certificates with Let's Encrypt. Set this to ``self``        |
 |                                       |                                      | if you will take care of getting certificates yourself. Set this to `none` if you are not going to use TLS.          |
@@ -57,7 +57,9 @@ Settings overview
 +---------------------------------------+--------------------------------------+----------------------------------------------------------------------------------------------------------------------+
 | ``ssl.key_path``                      | ``/etc/certificates/privkey.pem``    | If you set `ssl.certificate` to `self`, this path points to the certificate key.                                     |
 +---------------------------------------+--------------------------------------+----------------------------------------------------------------------------------------------------------------------+
-| ``caddy.exposed``                     | ``true``                             | Set this to true if your setup will be exposed to the Internet. Set it to false otherwise.                           |
+| ``caddy.internal``                    | ``false``                            | The Caddy instance is reachable from the outside world by default. If you want to change this behavior, set this     |
+|                                       |                                      | key to ``true``. Caddy will then be available in the network ``expose.mailstack.caddy``.                             |
+|                                       |                                      | Expose means in this case outside the mailstack.                                                                     |
 +---------------------------------------+--------------------------------------+----------------------------------------------------------------------------------------------------------------------+
 | ``caddy.ip_address``                  | none                                 | Public IP address of the Caddy container.                                                                            |
 +---------------------------------------+--------------------------------------+----------------------------------------------------------------------------------------------------------------------+

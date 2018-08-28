@@ -1,7 +1,7 @@
 vars:
   domain:
     default: example.com
-    comment: Default domain.
+    comment: Default Domain
 
   address:
     default: mail.example.com
@@ -12,7 +12,7 @@ vars:
       search_base: ou=People,dc=example,dc=com
       server: ldap:389
       tls: false
-    comment: Commonly shared ldap settings, don't set ldap protocol here.
+    comment: "Commonly shared ldap settings, don't set ldap protocol here."
 
   ssl:
     default:
@@ -23,10 +23,10 @@ vars:
 
   caddy:
     default:
-      exposed: true
+      internal: false
       ip_address: '127.0.0.1'
       email: "admin@example.com"
-    comment: Caddy available from outside or not? Set ip_address only if caddy is exposed
+    comment: Caddy available from outside or not? Set ip_address only if caddy is not internal
 
   postfix:
     default:

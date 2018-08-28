@@ -126,37 +126,33 @@ services:
       <<: *labels
     networks:
       - sogo.proxy
-      {{- if eq .caddy.exposed false }}
+      {{- if .caddy.internal }}
       - expose.mailstack.caddy
       {{- end }}
     volumes:
       - type: volume
         source: sogo-web
         target: /etc/sogo/resources
-      {{- if eq .caddy.exposed true }}
+      {{- if not .caddy.internal }}
       - type: volume
         source: certificates
         target: /etc/certificates
       {{- end }}
-    {{- if .caddy.exposed }}
+    {{- if not .caddy.internal }}
     ports:
       - "0.0.0.0:80:80"
       - "0.0.0.0:443:443"
-      {{/* If no domain is set, the webinterface is enabled and not directly published */}}
-      {{- if and (not .rspamd.webinterface.domain) (and .rspamd.webinterface.enable (eq .rspamd.webinterface.publish false)) }}
+      {{- /* If no domain is set, the webinterface is enabled and not directly published */ -}}
+      {{- if and (not .rspamd.webinterface.domain) (and .rspamd.webinterface.enable (not .rspamd.webinterface.publish)) }}
       - "0.0.0.0:11334:11334"
-      {{- end}}
+      {{- end }}
     {{- end }}
     environment:
       ADDRESS: {{ .address }}
       CERTIFICATE: "{{ .ssl.certificate }}"
-      EXPOSED: "{{ .caddy.exposed }}"
-      {{- if .caddy.exposed }}
+      INTERNAL: "{{ .caddy.internal }}"
       SERVER_IP: {{ .caddy.ip_address }}
-      {{- end}}
-      {{- if and .caddy.exposed (eq .ssl.certificate "caddy")}}
       EMAIL: {{ .caddy.email }}
-      {{- end }}
       {{ template "certificates" .}}
 
       {{- if and .rspamd.webinterface.enable (eq .rspamd.webinterface.publish false) }}
@@ -229,7 +225,7 @@ networks:
     external:
       name: auth.mailstack.sogo
 
-  {{- if eq .caddy.exposed false }}
+  {{- if .caddy.internal }}
   expose.mailstack.caddy:
     external:
       name: expose.mailstack.caddy
