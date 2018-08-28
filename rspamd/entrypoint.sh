@@ -2,7 +2,6 @@
 
 set -e
 
-
 if [ ! -f /var/lib/rspamd/dkim/2018.key ]; then
     rspamadm dkim_keygen -b 2018 -s 2018 -k /var/lib/rspamd/dkim/2018.key > /var/lib/rspamd/dkim/2018.txt
     chown -R _rspamd:_rspamd /var/lib/rspamd/dkim

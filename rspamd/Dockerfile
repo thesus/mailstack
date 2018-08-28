@@ -27,6 +27,8 @@ RUN echo 'type = "console";' > /etc/rspamd/override.d/logging.inc \
     && echo 'bind_socket = "*:11334";' > /etc/rspamd/override.d/worker-controller.inc \
     && echo 'pidfile = false;' > /etc/rspamd/override.d/options.inc
 
+RUN mkdir /var/lib/rspamd/dkim/
+
 COPY ./files/rspamd/ /var/tmp/rspamd/
 
 COPY ./entrypoint.sh /usr/bin/entrypoint.sh
