@@ -18,20 +18,45 @@ Once you've compiled ``config-management`` change to the mailstack git repositor
   config-management gen >> config.yml
 
 
-Now you can start editing and customizing your freshly created `config.yml`. Once you`re happy with the settings run:
+Now you can start editing and customizing your freshly created `config.yml`.
 
+.. note::
+
+  This is only a quick overview. Follow the quickstart for more detailed information.
+
+
+You can use this preflight check to determine propably occurring errors.
+
+* DNS reachable? Even from outside?
+* TLS Certificates created or managed by caddy?
+* LDAP Users for postfix, dovecot and SoGo?
+* External Volumes and Networks created? (see `docker`_)
+
+.. _docker: https://docs.docker.com/engine/reference/commandline/cli/
+
+
+You may wan't to prepare your mailstack before you start it. If you selected ``self`` as a certificate source, a good Idea would be
+to create a certificate or copy it to the right location. If you're in a hurry just generate it and proceed. See :ref:`reference-tls`.
+Besides creating or copying certificates, rspamd needs some help to hatch. The Webinterface in enabled by default, but no passwords are set.
+For all configuration options and setup of passwords visit :ref:`reference-rspamd`. Some of the volumes and networks that are used by the mailstack
+are ``external``, thats a docker term to describe their connectivity to other containers. Docker compose can't create them, so they need to be defined
+manually. Create the following volume: ``certificates``
+
+
+To create your ``docker-compose.yml`` file, run:
 
 .. code:: console
 
   config-management
 
 
-Now you should see a freshly created `docker-compose.yml` in your current directory. Take a glance at it or use it right away with:
+You should see a freshly created `docker-compose.yml` in your current directory. Take a glance at it or use it right away with:
 
 
 .. code:: console
 
   docker-compose up -d
+
 
 
 Settings overview
