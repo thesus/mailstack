@@ -1,12 +1,9 @@
-Reference
-=========
-
-
 rspamd
 ------
 
 Rspamd is a spam filtering system that analyses each message and give it a spam score, furthermore it allows monitoring the mail-traffic.
 It uses ``redis-server`` to cache and store internal data. Redis is running in the separate docker-container ``redis``
+
 
 Controller
 ~~~~~~~~~~
@@ -37,6 +34,10 @@ Put your hashed password in your ``config.yml`` as following:
 
 
 Don't worry about escaping chars, ``config-management`` will do that for you.
+
+
+Webinterface
+~~~~~~~~~~~~
 
 The Webinterface is enabled by default and also served by caddy. To disabled it, simply change ``rspamd.webinterface.enable`` to ``false``.
 If you want to use your own reverse proxy, set ``rspamd.webinterface.internal`` to ``true``. Rspamd is then attached to the ``expose.mailstack.rspamd`` network.

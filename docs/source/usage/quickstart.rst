@@ -1,6 +1,7 @@
 Getting started
 ===============
 
+
 Requirements:
 
 * docker version 18.03.1 or higher
