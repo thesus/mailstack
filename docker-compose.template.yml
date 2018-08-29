@@ -7,8 +7,8 @@ version: "3.5"
       CERT_PATH: {{ $base_path }}cert.key
       KEY_PATH: {{ $base_path }}{{ .address }}.key
 {{- else -}}
-      CERT_PATH: {{ with .ssl.cert_path }}{{ . }}{{ else }}/etc/certificates/fullchain.pem{{ end }}
-      KEY_PATH: {{ with .ssl.key_path }}{{ . }}{{ else }}/etc/certificates/privkey.pem{{ end }}
+      CERT_PATH: {{ with .ssl.cert_path }}{{ . }}{{ else }}/etc/certificates/cert.pem{{ end }}
+      KEY_PATH: {{ with .ssl.key_path }}{{ . }}{{ else }}/etc/certificates/key.pem{{ end }}
 {{- end -}}
 {{- end -}}
 
@@ -126,45 +126,43 @@ services:
       <<: *labels
     networks:
       - sogo.proxy
-      {{- if eq .caddy.exposed false }}
+      {{- if and .rspamd.webinterface.enable (not .rspamd.webinterface.internal) }}
+      - rspamd.proxy
+      {{- end }}
+      {{- if .caddy.internal }}
       - expose.mailstack.caddy
       {{- end }}
     volumes:
       - type: volume
         source: sogo-web
         target: /etc/sogo/resources
-      {{- if eq .caddy.exposed true }}
+      {{- if not .caddy.internal }}
       - type: volume
         source: certificates
         target: /etc/certificates
       {{- end }}
-    {{- if .caddy.exposed }}
+    {{- if not .caddy.internal }}
     ports:
       - "0.0.0.0:80:80"
       - "0.0.0.0:443:443"
-      {{/* If no domain is set, the webinterface is enabled and not directly published */}}
-      {{- if and (not .rspamd.webinterface.domain) (and .rspamd.webinterface.enable (eq .rspamd.webinterface.publish false)) }}
+      {{- /* If no domain is set, the webinterface is enabled and not directly published */ -}}
+      {{- if and (not .rspamd.webinterface.domain) (and .rspamd.webinterface.enable (not .rspamd.webinterface.internal)) }}
       - "0.0.0.0:11334:11334"
-      {{- end}}
+      {{- end }}
     {{- end }}
     environment:
       ADDRESS: {{ .address }}
       CERTIFICATE: "{{ .ssl.certificate }}"
-      EXPOSED: "{{ .caddy.exposed }}"
-      {{- if .caddy.exposed }}
+      INTERNAL: "{{ .caddy.internal }}"
       SERVER_IP: {{ .caddy.ip_address }}
-      {{- end}}
-      {{- if and .caddy.exposed (eq .ssl.certificate "caddy")}}
       EMAIL: {{ .caddy.email }}
-      {{- end }}
       {{ template "certificates" .}}
-
-      {{- if and .rspamd.webinterface.enable (eq .rspamd.webinterface.publish false) }}
-      {{- if and .rspamd.webinterface.domain}}
+      {{- if and .rspamd.webinterface.enable (not .rspamd.webinterface.internal) }}
+      {{- if .rspamd.webinterface.domain }}
       RSPAMD_DOMAIN: {{ .rspamd.webinterface.domain }}
       {{- end }}
       RSPAMD_PROXY: "true"
-      {{- end}}
+      {{- end }}
 
   rspamd:
     image: dev.cryptec.at:5000/infrastructure/mailstack/rspamd
@@ -176,10 +174,10 @@ services:
       - internal
        {{/* Connection to redis */}}
       - rspamd.database
-      {{- if and .rspamd.webinterface.enable (eq .rspamd.webinterface.publish false) }}
+      {{- if and .rspamd.webinterface.enable (not .rspamd.webinterface.internal) }}
       - rspamd.proxy
       {{- end }}
-      {{- if and .rspamd.webinterface.enable .rspamd.webinterface.publish }}
+      {{- if and .rspamd.webinterface.enable .rspamd.webinterface.internal }}
       - expose.mailstack.rspamd
       {{- end }}
     environment:
@@ -215,7 +213,7 @@ networks:
   sogo.proxy:
   sogo.cache:
   rspamd.database:
-  {{- if and .rspamd.webinterface.enable  (eq .rspamd.webinterface.publish false) }}
+  {{- if and .rspamd.webinterface.enable (not .rspamd.webinterface.internal) }}
   rspamd.proxy:
   {{- end }}
 
@@ -229,13 +227,13 @@ networks:
     external:
       name: auth.mailstack.sogo
 
-  {{- if eq .caddy.exposed false }}
+  {{- if .caddy.internal }}
   expose.mailstack.caddy:
     external:
       name: expose.mailstack.caddy
   {{- end }}
 
-  {{- if and .rspamd.webinterface.enable .rspamd.webinterface.publish }}
+  {{- if and .rspamd.webinterface.enable .rspamd.webinterface.internal }}
   expose.mailstack.rspamd:
     external:
       name: expose.mailstack.rspamd

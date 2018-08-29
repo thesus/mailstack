@@ -43,6 +43,18 @@ build-docker-image:rspamd:
     <<: *docker-image-template
 
 
+build-docker-image-util-tls:
+  stage: build
+  tags:
+    - docker-cli
+  before_script:
+    - docker login -u gitlab-ci-token -p $CI_BUILD_TOKEN $CI_REGISTRY
+  script:
+    - docker build --pull -t $CI_REGISTRY_IMAGE/utils/tls:$TAG ./utils/tls
+    - docker push "$CI_REGISTRY_IMAGE/utils/tls:$TAG"
+    - if [ "$CI_BUILD_REF_SLUG" = "master" ]; then docker tag "CI_REGISTRY_IMAGE/utils/tls:$TAG" "$CI_REGISTRY_IMAGE/utils/tls:latest" && docker push "$CI_REGISTRY_IMAGE/utils/tls:latest"; fi
+
+
 pages:
   tags:
     - docker
