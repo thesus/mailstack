@@ -1,6 +1,6 @@
 {{- define "address" -}}
     {{- if eq .Env.INTERNAL "false" -}}
-        {{ .Env.ADDRESS -}}
+        https://{{ .Env.ADDRESS -}}
     {{- else -}}
         :80
     {{- end -}}
@@ -86,7 +86,7 @@
 {{/* Section used by rspamd */}}
 {{ if .Env.RSPAMD_PROXY -}}
     {{- if .Env.RSPAMD_DOMAIN -}}
-        {{ .Env.RSPAMD_DOMAIN }}
+        https://{{ .Env.RSPAMD_DOMAIN }}
     {{- else }}
         :11334
     {{- end }} {

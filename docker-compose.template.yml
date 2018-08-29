@@ -126,6 +126,9 @@ services:
       <<: *labels
     networks:
       - sogo.proxy
+      {{- if and .rspamd.webinterface.enable (not .rspamd.webinterface.internal) }}
+      - rspamd.proxy
+      {{- end }}
       {{- if .caddy.internal }}
       - expose.mailstack.caddy
       {{- end }}
@@ -154,9 +157,10 @@ services:
       SERVER_IP: {{ .caddy.ip_address }}
       EMAIL: {{ .caddy.email }}
       {{ template "certificates" .}}
-
       {{- if and .rspamd.webinterface.enable (not .rspamd.webinterface.internal) }}
+      {{- if .rspamd.webinterface.domain }}
       RSPAMD_DOMAIN: {{ .rspamd.webinterface.domain }}
+      {{- end }}
       RSPAMD_PROXY: "true"
       {{- end }}
 
