@@ -9,6 +9,8 @@ vars:
 
   ldap:
     default:
+      included: true
+      admin_pw: apfel
       search_base: ou=People,dc=example,dc=com
       server: ldap:389
       tls: false
@@ -70,3 +72,4 @@ vars:
 
 files:
   docker-compose.template.yml: docker-compose.yml
+  ldap.template.env: ldap.env

@@ -12,6 +12,11 @@ version: "3.5"
 {{- end -}}
 {{- end -}}
 
+
+{{- $ldap := print "dc=" (replace .domain "." ",dc=") -}}
+{{- $base := print "ou=People" $ldap -}}
+
+
 services:
   postfix:
     image: dev.cryptec.at:5000/infrastructure/mailstack/postfix
@@ -24,7 +29,7 @@ services:
       POSTFIX_VIRTUAL_MAILBOX_DOMAINS: {{ .domain }}
       POSTFIX_LDAP_BIND_DN: {{ .postfix.ldap.bind_dn }}
       POSTFIX_LDAP_BIND_PASSWORD: {{ .postfix.ldap.bind_pw }}
-      POSTFIX_LDAP_SEARCH_BASE: {{ .ldap.search_base }}
+      POSTFIX_LDAP_SEARCH_BASE: {{ if .ldap.included -}}{{ $base }}{{- else -}}{{ .ldap.search_base }}{{- end }}
       POSTFIX_LDAP_HOST: {{ .ldap.server }}
       POSTFIX_LDAP_DOMAIN: {{ .domain }}
       {{ template "certificates" .}}
@@ -48,7 +53,7 @@ services:
     environment:
       DOVECOT_LDAP_BIND_DN: {{ .dovecot.ldap.bind_dn }}
       DOVECOT_LDAP_BIND_PASSWORD: {{ .dovecot.ldap.bind_pw }}
-      DOVECOT_LDAP_SEARCH_BASE: {{ .ldap.search_base }}
+      DOVECOT_LDAP_SEARCH_BASE: {{ if .ldap.included -}}{{ $base }}{{- else -}}{{ .ldap.search_base }}{{- end }}
       DOVECOT_LDAP_HOST: {{ if .ldap.tls }}ldaps://{{ else }}ldap://{{ end }}{{ .ldap.server }}
       {{ template "certificates" .}}
     ports:
@@ -77,7 +82,7 @@ services:
 
       SOGO_LDAP_BIND_DN: {{ .sogo.ldap.bind_dn }}
       SOGO_LDAP_BIND_PASSWORD: {{ .sogo.ldap.bind_pw }}
-      SOGO_LDAP_BASE_DN: {{ .ldap.search_base }}
+      SOGO_LDAP_BASE_DN: {{ if .ldap.included -}}{{ $base }}{{- else -}}{{ .ldap.search_base }}{{- end }}
 
       ENABLE_DEBUG: "{{ .sogo.debug }}"
 
@@ -197,12 +202,31 @@ services:
     volumes:
       - redis-data:/data
 
+  {{- if .ldap.included }}
+  ldap:
+    image: dev.cryptec.at:5000/infrastructure/ldap:latest
+    labels:
+      <<: *labels
+    networks:
+      - internal
+    volumes:
+      - ldap-conf:/etc/ldap
+      - ldap-data:/var/lib/ldap
+    environment:
+      SLAPD_DOMAIN: {{ .domain }}
+      SLAPD_PASSWORD: {{ .ldap.admin_pw }}
+  {{- end }}
+
 volumes:
   mailboxes:
   postgres-data:
   sogo-web:
   rspamd-data:
   redis-data:
+  {{- if .ldap.included }}
+  ldap-conf:
+  ldap-data:
+  {{- end }}
   certificates:
     external:
       name: certificates
@@ -216,6 +240,7 @@ networks:
   {{- if and .rspamd.webinterface.enable (not .rspamd.webinterface.internal) }}
   rspamd.proxy:
   {{- end }}
+
 
   auth.mailstack.postfix:
     external:

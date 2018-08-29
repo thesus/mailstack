@@ -1,0 +1,19 @@
+# Services
+dn: ou=Services, {{- .Env.BASE }}
+ou: Services
+objectClass: top
+objectClass: organizationalUnit
+
+
+# People
+dn: ou=People, {{- .Env.BASE }}
+ou: People
+objectClass: top
+objectClass: organizationalUnit
+
+
+# Groups
+dn: ou=Groups, {{- .Env.BASE }}
+ou: Groups
+objectClass: top
+objectClass: organizationalUnit
