@@ -49,7 +49,7 @@ vars:
         enable_password: none
       webinterface:
         enable: true
-        publish: false
+        internal: false
         domain: rspamd.example.com
     comment: Rspamd settings
 

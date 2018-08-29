@@ -143,7 +143,7 @@ services:
       - "0.0.0.0:80:80"
       - "0.0.0.0:443:443"
       {{- /* If no domain is set, the webinterface is enabled and not directly published */ -}}
-      {{- if and (not .rspamd.webinterface.domain) (and .rspamd.webinterface.enable (not .rspamd.webinterface.publish)) }}
+      {{- if and (not .rspamd.webinterface.domain) (and .rspamd.webinterface.enable (not .rspamd.webinterface.internal)) }}
       - "0.0.0.0:11334:11334"
       {{- end }}
     {{- end }}
@@ -155,12 +155,10 @@ services:
       EMAIL: {{ .caddy.email }}
       {{ template "certificates" .}}
 
-      {{- if and .rspamd.webinterface.enable (eq .rspamd.webinterface.publish false) }}
-      {{- if and .rspamd.webinterface.domain}}
+      {{- if and .rspamd.webinterface.enable (not .rspamd.webinterface.internal) }}
       RSPAMD_DOMAIN: {{ .rspamd.webinterface.domain }}
-      {{- end }}
       RSPAMD_PROXY: "true"
-      {{- end}}
+      {{- end }}
 
   rspamd:
     image: dev.cryptec.at:5000/infrastructure/mailstack/rspamd
@@ -172,10 +170,10 @@ services:
       - internal
        {{/* Connection to redis */}}
       - rspamd.database
-      {{- if and .rspamd.webinterface.enable (eq .rspamd.webinterface.publish false) }}
+      {{- if and .rspamd.webinterface.enable (not .rspamd.webinterface.internal) }}
       - rspamd.proxy
       {{- end }}
-      {{- if and .rspamd.webinterface.enable .rspamd.webinterface.publish }}
+      {{- if and .rspamd.webinterface.enable .rspamd.webinterface.internal }}
       - expose.mailstack.rspamd
       {{- end }}
     environment:
@@ -211,7 +209,7 @@ networks:
   sogo.proxy:
   sogo.cache:
   rspamd.database:
-  {{- if and .rspamd.webinterface.enable  (eq .rspamd.webinterface.publish false) }}
+  {{- if and .rspamd.webinterface.enable (not .rspamd.webinterface.internal) }}
   rspamd.proxy:
   {{- end }}
 
@@ -231,7 +229,7 @@ networks:
       name: expose.mailstack.caddy
   {{- end }}
 
-  {{- if and .rspamd.webinterface.enable .rspamd.webinterface.publish }}
+  {{- if and .rspamd.webinterface.enable .rspamd.webinterface.internal }}
   expose.mailstack.rspamd:
     external:
       name: expose.mailstack.rspamd
