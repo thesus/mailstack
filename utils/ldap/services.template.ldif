@@ -1,0 +1,28 @@
+dn: {{ .Env.SOGO_BIND }}
+objectClass: top
+objectClass: person
+objectClass: organizationalPerson
+objectClass: shadowAccount
+cn: sogo
+sn: sogo
+userPassword: {{ .Env.SOGO_PW }}
+
+
+dn: {{ .Env.DOVECOT_BIND }}
+objectClass: top
+objectClass: person
+objectClass: organizationalPerson
+objectClass: shadowAccount
+cn: dovecot
+sn: dovecot
+userPassword: {{ .Env.DOVECOT_PW }}
+
+
+dn: {{ .Env.POSTFIX_BIND }}
+objectClass: top
+objectClass: person
+objectClass: organizationalPerson
+objectClass: shadowAccount
+cn: postfix
+sn: postfix
+userPassword: {{ .Env.POSTFIX_PW }}

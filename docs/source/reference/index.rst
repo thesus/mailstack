@@ -6,3 +6,4 @@ Reference
 
   rspamd
   security
+  ldap
