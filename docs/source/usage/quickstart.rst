@@ -35,7 +35,7 @@ You can use this preflight check to determine propably occurring errors.
 .. _docker: https://docs.docker.com/engine/reference/commandline/cli/
 
 
-You may wan't to prepare your mailstack before you start it. If you selected ``self`` as a certificate source, a good Idea would be
+You may wan't to prepare your mailstack before you start it. If ``self`` is selected as a certificate source, it would be a good Idea
 to create a certificate or copy it to the right location. If you're in a hurry just generate it and proceed. See :ref:`reference-tls`.
 Besides creating or copying certificates, rspamd needs some help to hatch. The Webinterface in enabled by default, but no passwords are set.
 For all configuration options and setup of passwords visit :ref:`reference-rspamd`. Some of the volumes and networks that are used by the mailstack
@@ -57,6 +57,9 @@ You should see a freshly created `docker-compose.yml` in your current directory.
 
   docker-compose up -d
 
+
+Once you've succesfully started all services you can prepopulate the (internal) ldap with Organizational Units and Users for dovecot, postfix and sogo.
+You can find more information about setting up the OpenLDAP here: :ref:`reference_ldap`
 
 
 Settings overview

@@ -3,6 +3,7 @@ docker-compose.yml
 
 # Ignore custom configurations
 config.yml
+ldap.env
 
 # Ignore virtual environments (for documentation)
 venv
