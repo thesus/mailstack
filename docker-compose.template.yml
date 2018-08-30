@@ -14,7 +14,7 @@ version: "3.5"
 
 
 {{- $ldap := print "dc=" (replace .domain "." ",dc=") -}}
-{{- $base := print "ou=People" $ldap -}}
+{{- $base := print "ou=People," $ldap -}}
 
 
 services:
@@ -54,7 +54,7 @@ services:
       DOVECOT_LDAP_BIND_DN: {{ .dovecot.ldap.bind_dn }}
       DOVECOT_LDAP_BIND_PASSWORD: {{ .dovecot.ldap.bind_pw }}
       DOVECOT_LDAP_SEARCH_BASE: {{ if .ldap.included -}}{{ $base }}{{- else -}}{{ .ldap.search_base }}{{- end }}
-      DOVECOT_LDAP_HOST: {{ if .ldap.tls }}ldaps://{{ else }}ldap://{{ end }}{{ .ldap.server }}
+      DOVECOT_LDAP_HOST: {{ .ldap.server }}
       {{ template "certificates" .}}
     ports:
       - "143:143"
@@ -80,6 +80,7 @@ services:
     environment:
       SOGO_MAIL_DOMAIN: {{ .domain }}
 
+      SOGO_LDAP_HOST: {{ if .ldap.tls }}ldaps://{{ else }}ldap://{{ end }}{{ .ldap.server }}
       SOGO_LDAP_BIND_DN: {{ .sogo.ldap.bind_dn }}
       SOGO_LDAP_BIND_PASSWORD: {{ .sogo.ldap.bind_pw }}
       SOGO_LDAP_BASE_DN: {{ if .ldap.included -}}{{ $base }}{{- else -}}{{ .ldap.search_base }}{{- end }}
