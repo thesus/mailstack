@@ -18,7 +18,7 @@ vars:
 
   ssl:
     default:
-      certificate: caddy
+      certificate: self
       cert_path: /etc/certificates/cert.pem
       key_path: /etc/certificates/key.pem
     comment: "SSL related settings. Options: caddy, self"
