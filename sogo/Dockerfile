@@ -6,7 +6,7 @@ COPY --from=dockerize /usr/local/bin/dockerize /usr/local/bin/dockerize
 
 ARG DEBIAN_FRONTEND=noninteractive
 
-RUN apt-get update && apt-get install apt-transport-https gnupg2 rsyslog -y
+RUN apt-get update && apt-get install apt-transport-https gnupg2 rsyslog ca-certificates -y
 
 RUN apt-key adv --keyserver keys.gnupg.net --recv-key 0x810273C4
 

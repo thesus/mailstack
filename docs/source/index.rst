@@ -7,11 +7,12 @@ Welcome to mailstack's documentation!
 =====================================
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 3
    :caption: Contents:
 
    usage/quickstart
-   usage/reference
+
+   reference/index
 
 Indices and tables
 ==================

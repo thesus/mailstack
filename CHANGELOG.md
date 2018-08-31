@@ -1,3 +1,13 @@
+Version 0.2.0
+=============
+
+Integrated LDAP
+- Utilities for TLS and LDAP
+- Extensive Documentation
+- Lots of fixes
+- More consistent configuration
+
+
 Version 0.1.0
 =============
 

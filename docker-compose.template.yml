@@ -7,24 +7,29 @@ version: "3.5"
       CERT_PATH: {{ $base_path }}cert.key
       KEY_PATH: {{ $base_path }}{{ .address }}.key
 {{- else -}}
-      CERT_PATH: {{ with .ssl.cert_path }}{{ . }}{{ else }}/etc/certificates/fullchain.pem{{ end }}
-      KEY_PATH: {{ with .ssl.key_path }}{{ . }}{{ else }}/etc/certificates/privkey.pem{{ end }}
+      CERT_PATH: {{ with .ssl.cert_path }}{{ . }}{{ else }}/etc/certificates/cert.pem{{ end }}
+      KEY_PATH: {{ with .ssl.key_path }}{{ . }}{{ else }}/etc/certificates/key.pem{{ end }}
 {{- end -}}
 {{- end -}}
+
+
+{{- $ldap := print "dc=" (replace .domain "." ",dc=") -}}
+{{- $search_base := ifthen .ldap.included (print "ou=People," $ldap) .ldap.search_base -}}
+
 
 services:
   postfix:
     image: dev.cryptec.at:5000/infrastructure/mailstack/postfix
     build: ./postfix
     labels: &labels
-      at.cryptec.dev.infrastructure.mailstack.version: "0.1.0"
+      at.cryptec.dev.infrastructure.mailstack.version: "0.2.0"
     environment:
       POSTFIX_MYORIGIN: {{ .domain }}
       POSTFIX_MYDOMAIN: {{ .domain}}
       POSTFIX_VIRTUAL_MAILBOX_DOMAINS: {{ .domain }}
       POSTFIX_LDAP_BIND_DN: {{ .postfix.ldap.bind_dn }}
       POSTFIX_LDAP_BIND_PASSWORD: {{ .postfix.ldap.bind_pw }}
-      POSTFIX_LDAP_SEARCH_BASE: {{ .ldap.search_base }}
+      POSTFIX_LDAP_SEARCH_BASE: {{ $search_base }}
       POSTFIX_LDAP_HOST: {{ .ldap.server }}
       POSTFIX_LDAP_DOMAIN: {{ .domain }}
       {{ template "certificates" .}}
@@ -48,8 +53,8 @@ services:
     environment:
       DOVECOT_LDAP_BIND_DN: {{ .dovecot.ldap.bind_dn }}
       DOVECOT_LDAP_BIND_PASSWORD: {{ .dovecot.ldap.bind_pw }}
-      DOVECOT_LDAP_SEARCH_BASE: {{ .ldap.search_base }}
-      DOVECOT_LDAP_HOST: {{ if .ldap.tls }}ldaps://{{ else }}ldap://{{ end }}{{ .ldap.server }}
+      DOVECOT_LDAP_SEARCH_BASE: {{ $search_base }}
+      DOVECOT_LDAP_HOST: {{ .ldap.server }}
       {{ template "certificates" .}}
     ports:
       - "143:143"
@@ -75,9 +80,11 @@ services:
     environment:
       SOGO_MAIL_DOMAIN: {{ .domain }}
 
+      SOGO_LDAP_HOST: {{ ifthen .ldap.tls "ldaps://" "ldap://" }}{{ .ldap.server }}
       SOGO_LDAP_BIND_DN: {{ .sogo.ldap.bind_dn }}
       SOGO_LDAP_BIND_PASSWORD: {{ .sogo.ldap.bind_pw }}
-      SOGO_LDAP_BASE_DN: {{ .ldap.search_base }}
+      # SoGo's term for search base
+      SOGO_LDAP_BASE_DN: {{ $search_base }}
 
       ENABLE_DEBUG: "{{ .sogo.debug }}"
 
@@ -126,45 +133,43 @@ services:
       <<: *labels
     networks:
       - sogo.proxy
-      {{- if eq .caddy.exposed false }}
+      {{- if and .rspamd.webinterface.enable (not .rspamd.webinterface.internal) }}
+      - rspamd.proxy
+      {{- end }}
+      {{- if .caddy.internal }}
       - expose.mailstack.caddy
       {{- end }}
     volumes:
       - type: volume
         source: sogo-web
         target: /etc/sogo/resources
-      {{- if eq .caddy.exposed true }}
+      {{- if not .caddy.internal }}
       - type: volume
         source: certificates
         target: /etc/certificates
       {{- end }}
-    {{- if .caddy.exposed }}
+    {{- if not .caddy.internal }}
     ports:
       - "0.0.0.0:80:80"
       - "0.0.0.0:443:443"
-      {{/* If no domain is set, the webinterface is enabled and not directly published */}}
-      {{- if and (not .rspamd.webinterface.domain) (and .rspamd.webinterface.enable (eq .rspamd.webinterface.publish false)) }}
+      {{- /* If no domain is set, the webinterface is enabled and not directly published */ -}}
+      {{- if and (not .rspamd.webinterface.domain) (and .rspamd.webinterface.enable (not .rspamd.webinterface.internal)) }}
       - "0.0.0.0:11334:11334"
-      {{- end}}
+      {{- end }}
     {{- end }}
     environment:
       ADDRESS: {{ .address }}
       CERTIFICATE: "{{ .ssl.certificate }}"
-      EXPOSED: "{{ .caddy.exposed }}"
-      {{- if .caddy.exposed }}
+      INTERNAL: "{{ .caddy.internal }}"
       SERVER_IP: {{ .caddy.ip_address }}
-      {{- end}}
-      {{- if and .caddy.exposed (eq .ssl.certificate "caddy")}}
       EMAIL: {{ .caddy.email }}
-      {{- end }}
       {{ template "certificates" .}}
-
-      {{- if and .rspamd.webinterface.enable (eq .rspamd.webinterface.publish false) }}
-      {{- if and .rspamd.webinterface.domain}}
+      {{- if and .rspamd.webinterface.enable (not .rspamd.webinterface.internal) }}
+      {{- if .rspamd.webinterface.domain }}
       RSPAMD_DOMAIN: {{ .rspamd.webinterface.domain }}
       {{- end }}
       RSPAMD_PROXY: "true"
-      {{- end}}
+      {{- end }}
 
   rspamd:
     image: dev.cryptec.at:5000/infrastructure/mailstack/rspamd
@@ -176,10 +181,10 @@ services:
       - internal
        {{/* Connection to redis */}}
       - rspamd.database
-      {{- if and .rspamd.webinterface.enable (eq .rspamd.webinterface.publish false) }}
+      {{- if and .rspamd.webinterface.enable (not .rspamd.webinterface.internal) }}
       - rspamd.proxy
       {{- end }}
-      {{- if and .rspamd.webinterface.enable .rspamd.webinterface.publish }}
+      {{- if and .rspamd.webinterface.enable .rspamd.webinterface.internal }}
       - expose.mailstack.rspamd
       {{- end }}
     environment:
@@ -199,12 +204,31 @@ services:
     volumes:
       - redis-data:/data
 
+  {{- if .ldap.included }}
+  ldap:
+    image: dev.cryptec.at:5000/infrastructure/ldap:latest
+    labels:
+      <<: *labels
+    networks:
+      - internal
+    volumes:
+      - ldap-conf:/etc/ldap
+      - ldap-data:/var/lib/ldap
+    environment:
+      SLAPD_DOMAIN: {{ .domain }}
+      SLAPD_PASSWORD: {{ .ldap.admin_pw }}
+  {{- end }}
+
 volumes:
   mailboxes:
   postgres-data:
   sogo-web:
   rspamd-data:
   redis-data:
+  {{- if .ldap.included }}
+  ldap-conf:
+  ldap-data:
+  {{- end }}
   certificates:
     external:
       name: certificates
@@ -215,9 +239,10 @@ networks:
   sogo.proxy:
   sogo.cache:
   rspamd.database:
-  {{- if and .rspamd.webinterface.enable  (eq .rspamd.webinterface.publish false) }}
+  {{- if and .rspamd.webinterface.enable (not .rspamd.webinterface.internal) }}
   rspamd.proxy:
   {{- end }}
+
 
   auth.mailstack.postfix:
     external:
@@ -229,13 +254,13 @@ networks:
     external:
       name: auth.mailstack.sogo
 
-  {{- if eq .caddy.exposed false }}
+  {{- if .caddy.internal }}
   expose.mailstack.caddy:
     external:
       name: expose.mailstack.caddy
   {{- end }}
 
-  {{- if and .rspamd.webinterface.enable .rspamd.webinterface.publish }}
+  {{- if and .rspamd.webinterface.enable .rspamd.webinterface.internal }}
   expose.mailstack.rspamd:
     external:
       name: expose.mailstack.rspamd
