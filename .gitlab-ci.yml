@@ -52,7 +52,7 @@ build-docker-image-util-tls:
   script:
     - docker build --pull -t $CI_REGISTRY_IMAGE/utils/tls:$TAG ./utils/tls
     - docker push "$CI_REGISTRY_IMAGE/utils/tls:$TAG"
-    - if [ "$CI_BUILD_REF_SLUG" = "master" ]; then docker tag "CI_REGISTRY_IMAGE/utils/tls:$TAG" "$CI_REGISTRY_IMAGE/utils/tls:latest" && docker push "$CI_REGISTRY_IMAGE/utils/tls:latest"; fi
+    - if [ "$CI_BUILD_REF_SLUG" = "master" ]; then docker tag "$CI_REGISTRY_IMAGE/utils/tls:$TAG" "$CI_REGISTRY_IMAGE/utils/tls:latest" && docker push "$CI_REGISTRY_IMAGE/utils/tls:latest"; fi
 
 
 build-docker-image-util-ldap:
@@ -64,7 +64,7 @@ build-docker-image-util-ldap:
   script:
     - docker build --pull -t $CI_REGISTRY_IMAGE/utils/ldap:$TAG ./utils/ldap
     - docker push "$CI_REGISTRY_IMAGE/utils/ldap:$TAG"
-    - if [ "$CI_BUILD_REF_SLUG" = "master" ]; then docker iitag "CI_REGISTRY_IMAGE/utils/ldap:$TAG" "$CI_REGISTRY_IMAGE/utils/ldap:latest" && docker push "$CI_REGISTRY_IMAGE/utils/ldap:latest"; fi
+    - if [ "$CI_BUILD_REF_SLUG" = "master" ]; then docker tag "$CI_REGISTRY_IMAGE/utils/ldap:$TAG" "$CI_REGISTRY_IMAGE/utils/ldap:latest" && docker push "$CI_REGISTRY_IMAGE/utils/ldap:latest"; fi
 
 
 pages:
