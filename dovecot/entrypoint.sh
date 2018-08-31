@@ -2,6 +2,10 @@
 
 set -e
 
+# Well generating diffie-hellman parameters
+# TODO: Move data into volume.
+openssl dhparam -out /etc/dovecot/dh.pem 2048
+
 id -u vmail &>/dev/null || useradd -U -M -d /var/vmail vmail
 
 /usr/local/bin/dockerize -template /var/tmp/dovecot/conf.d/:/etc/dovecot/conf.d \

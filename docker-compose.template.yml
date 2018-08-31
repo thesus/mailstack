@@ -19,10 +19,10 @@ version: "3.5"
 
 services:
   postfix:
-    image: dev.cryptec.at:5000/infrastructure/mailstack/postfix
+    image: dev.cryptec.at:5000/infrastructure/mailstack/postfix:master
     build: ./postfix
     labels: &labels
-      at.cryptec.dev.infrastructure.mailstack.version: "0.2.1"
+      at.cryptec.dev.infrastructure.mailstack.version: "0.2.2"
     environment:
       POSTFIX_MYORIGIN: {{ .domain }}
       POSTFIX_MYDOMAIN: {{ .domain}}
@@ -44,9 +44,10 @@ services:
         source: certificates
         target: /etc/certificates
         read_only: yes
+    restart: always
 
   dovecot:
-    image: dev.cryptec.at:5000/infrastructure/mailstack/dovecot
+    image: dev.cryptec.at:5000/infrastructure/mailstack/dovecot:master
     build: ./dovecot
     labels:
       <<: *labels
@@ -70,9 +71,10 @@ services:
     networks:
       - internal
       - auth.mailstack.dovecot
+    restart: always
 
   sogo:
-    image: dev.cryptec.at:5000/infrastructure/mailstack/sogo
+    image: dev.cryptec.at:5000/infrastructure/mailstack/sogo:master
     build: ./sogo
     user: sogo
     labels:
@@ -101,6 +103,7 @@ services:
       - type: volume
         source: sogo-web
         target: /usr/lib/GNUstep/SOGo/WebServerResources
+    restart: always
 
   memcached:
     image: memcached:alpine
@@ -108,6 +111,7 @@ services:
       <<: *labels
     networks:
       - sogo.cache
+    restart: always
 
   postgres:
     image: postgres
@@ -125,9 +129,10 @@ services:
       PGDATA: /var/lib/postgresql/data/pgdata
     networks:
       - database
+    restart: always
 
   caddy:
-    image: dev.cryptec.at:5000/infrastructure/mailstack/caddy
+    image: dev.cryptec.at:5000/infrastructure/mailstack/caddy:master
     build: ./caddy
     labels:
       <<: *labels
@@ -170,9 +175,10 @@ services:
       {{- end }}
       RSPAMD_PROXY: "true"
       {{- end }}
+    restart: always
 
   rspamd:
-    image: dev.cryptec.at:5000/infrastructure/mailstack/rspamd
+    image: dev.cryptec.at:5000/infrastructure/mailstack/rspamd:master
     build: ./rspamd
     labels:
       <<: *labels
@@ -193,6 +199,7 @@ services:
       RSPAMD_WEBINTERFACE_ENABLE_PASSWORD: {{ replace .rspamd.controller.enable_password "$" "$$" }}
     volumes:
       - rspamd-data:/var/lib/rspamd
+    restart: always
 
   redis:
     image: redis:latest
@@ -203,6 +210,7 @@ services:
       - rspamd.database
     volumes:
       - redis-data:/data
+    restart: always
 
   {{- if .ldap.included }}
   ldap:
@@ -217,6 +225,7 @@ services:
     environment:
       SLAPD_DOMAIN: {{ .domain }}
       SLAPD_PASSWORD: {{ .ldap.admin_pw }}
+    restart: always
   {{- end }}
 
 volumes:
