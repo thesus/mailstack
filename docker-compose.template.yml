@@ -14,7 +14,7 @@ version: "3.5"
 
 
 {{- $ldap := print "dc=" (replace .domain "." ",dc=") -}}
-{{- $base := print "ou=People," $ldap -}}
+{{- $search_base := ifthen .ldap.included (print "ou=People," $ldap) .ldap.search_base -}}
 
 
 services:
@@ -29,7 +29,7 @@ services:
       POSTFIX_VIRTUAL_MAILBOX_DOMAINS: {{ .domain }}
       POSTFIX_LDAP_BIND_DN: {{ .postfix.ldap.bind_dn }}
       POSTFIX_LDAP_BIND_PASSWORD: {{ .postfix.ldap.bind_pw }}
-      POSTFIX_LDAP_SEARCH_BASE: {{ if .ldap.included -}}{{ $base }}{{- else -}}{{ .ldap.search_base }}{{- end }}
+      POSTFIX_LDAP_SEARCH_BASE: {{ $search_base }}
       POSTFIX_LDAP_HOST: {{ .ldap.server }}
       POSTFIX_LDAP_DOMAIN: {{ .domain }}
       {{ template "certificates" .}}
@@ -53,7 +53,7 @@ services:
     environment:
       DOVECOT_LDAP_BIND_DN: {{ .dovecot.ldap.bind_dn }}
       DOVECOT_LDAP_BIND_PASSWORD: {{ .dovecot.ldap.bind_pw }}
-      DOVECOT_LDAP_SEARCH_BASE: {{ if .ldap.included -}}{{ $base }}{{- else -}}{{ .ldap.search_base }}{{- end }}
+      DOVECOT_LDAP_SEARCH_BASE: {{ $search_base }}
       DOVECOT_LDAP_HOST: {{ .ldap.server }}
       {{ template "certificates" .}}
     ports:
@@ -80,10 +80,11 @@ services:
     environment:
       SOGO_MAIL_DOMAIN: {{ .domain }}
 
-      SOGO_LDAP_HOST: {{ if .ldap.tls }}ldaps://{{ else }}ldap://{{ end }}{{ .ldap.server }}
+      SOGO_LDAP_HOST: {{ ifthen .ldap.tls "ldaps://" "ldap://" }}{{ .ldap.server }}
       SOGO_LDAP_BIND_DN: {{ .sogo.ldap.bind_dn }}
       SOGO_LDAP_BIND_PASSWORD: {{ .sogo.ldap.bind_pw }}
-      SOGO_LDAP_BASE_DN: {{ if .ldap.included -}}{{ $base }}{{- else -}}{{ .ldap.search_base }}{{- end }}
+      # SoGo's term for search base
+      SOGO_LDAP_BASE_DN: {{ $search_base }}
 
       ENABLE_DEBUG: "{{ .sogo.debug }}"
 
