@@ -6,6 +6,7 @@ Requirements:
 
 * docker version 18.03.1 or higher
 * docker-compose version 1.21.1 or higher
+* config-management version 1.1.2 or higher
 
 We're using `config-management`_ to compile a custom ``docker-compose.yml`` file.
 Once you've compiled ``config-management`` change to the mailstack git repository and create your custom configuration with:
@@ -59,7 +60,7 @@ You should see a freshly created `docker-compose.yml` in your current directory.
 
 
 Once you've succesfully started all services you can prepopulate the (internal) ldap with Organizational Units and Users for dovecot, postfix and sogo.
-You can find more information about setting up the OpenLDAP here: :ref:`reference_ldap`
+You can find more information about setting up the OpenLDAP here: :ref:`reference-ldap`
 
 
 Settings overview
