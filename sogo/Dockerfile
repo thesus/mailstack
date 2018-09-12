@@ -8,7 +8,11 @@ ARG DEBIAN_FRONTEND=noninteractive
 
 RUN apt-get update && apt-get install apt-transport-https gnupg2 rsyslog ca-certificates -y
 
-RUN apt-key adv --keyserver keys.gnupg.net --recv-key 0x810273C4
+RUN set -x && \
+    key='0x19cda6a9810273c4' && \
+    apt-key adv --keyserver keys.gnupg.net --recv-key "$key" || \
+    apt-key adv --keyserver pgp.mit.edu --recv-key "$key" || \
+    apt-key adv --keyserver ha.pool.sks-keyservers.net --recv-key "$key"
 
 RUN echo "deb https://packages.inverse.ca/SOGo/nightly/4/debian/ stretch stretch" > /etc/apt/sources.list.d/SOGo.list
 

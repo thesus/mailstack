@@ -8,24 +8,21 @@ COPY --from=dockerize /usr/local/bin/dockerize /usr/local/bin/dockerize
 
 RUN apt-get update && apt-get install -y --no-install-recommends gnupg dirmngr && rm -rf /var/lib/apt/lists/*
 
-RUN set -x \
-# gpg: key FFA232EDBF21E25E: public key "Rspamd Nightly Builds (Rspamd Nightly Builds) <vsevolod@highsecure.ru>" imported
-    && key='3FA347D5E599BE4595CA2576FFA232EDBF21E25E' \
-    && export GNUPGHOME="$(mktemp -d)" \
-    && gpg --keyserver ha.pool.sks-keyservers.net --recv-keys "$key" \
-    && gpg --export "$key" > /etc/apt/trusted.gpg.d/rspamd.gpg \
-    && rm -rf "$GNUPGHOME" \
-    && apt-key list > /dev/null
+RUN set -x && \
+    key='3FA347D5E599BE4595CA2576FFA232EDBF21E25E' && \
+    apt-key adv --keyserver keys.gnupg.net --recv-key "$key" || \
+    apt-key adv --keyserver pgp.mit.edu --recv-key "$key" || \
+    apt-key adv --keyserver ha.pool.sks-keyservers.net --recv-key "$key"
 
 RUN echo "deb http://rspamd.com/apt-stable/ stretch main" > /etc/apt/sources.list.d/rspamd.list
 
-RUN apt-get update \
-    && apt-get install -y rspamd \
-    && rm -rf /var/lib/apt/lists/*
+RUN apt-get update && \
+    apt-get install -y rspamd && \
+    rm -rf /var/lib/apt/lists/*
 
-RUN echo 'type = "console";' > /etc/rspamd/override.d/logging.inc \
-    && echo 'bind_socket = "*:11334";' > /etc/rspamd/override.d/worker-controller.inc \
-    && echo 'pidfile = false;' > /etc/rspamd/override.d/options.inc
+RUN echo 'type = "console";' > /etc/rspamd/override.d/logging.inc && \
+    echo 'bind_socket = "*:11334";' > /etc/rspamd/override.d/worker-controller.inc && \
+    echo 'pidfile = false;' > /etc/rspamd/override.d/options.inc
 
 RUN mkdir /var/lib/rspamd/dkim/
 
