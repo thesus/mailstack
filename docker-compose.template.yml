@@ -2,7 +2,7 @@ version: "3.5"
 
 {{ define "certificates" }}
 {{- if eq .ssl.certificate "caddy" -}}
-      {{/* Modify caddy, for "simple certificates" Dovecot isn't happy with fullchain certs at all. Postfix neither. */}}
+      {{- /* Modify caddy, for "simple certificates" Dovecot isn't happy with fullchain certs at all. Postfix neither. */}}
       {{- $base_path := print "/etc/certificates/acme/acme-v02.api.letsencrypt.org/sites/" .address "/ " -}}
       CERT_PATH: {{ $base_path }}cert.key
       KEY_PATH: {{ $base_path }}{{ .address }}.key
@@ -20,7 +20,9 @@ version: "3.5"
 services:
   postfix:
     image: dev.cryptec.at:5000/infrastructure/mailstack/postfix:master
+    {{ if .compose.include_build_settings -}}
     build: ./postfix
+    {{ end -}}
     labels: &labels
       at.cryptec.dev.infrastructure.mailstack.version: "0.2.2"
     environment:
@@ -48,7 +50,9 @@ services:
 
   dovecot:
     image: dev.cryptec.at:5000/infrastructure/mailstack/dovecot:master
+    {{ if .compose.include_build_settings -}}
     build: ./dovecot
+    {{ end -}}
     labels:
       <<: *labels
     environment:
@@ -65,6 +69,9 @@ services:
         source: mailboxes
         target: /var/vmail
       - type: volume
+        source: dovecot-data
+        target: /usr/lib/dovecot/dhparams
+      - type: volume
         source: certificates
         target: /etc/certificates
         read_only: yes
@@ -75,21 +82,20 @@ services:
 
   sogo:
     image: dev.cryptec.at:5000/infrastructure/mailstack/sogo:master
+    {{ if .compose.include_build_settings -}}
     build: ./sogo
+    {{ end -}}
     user: sogo
     labels:
       <<: *labels
     environment:
       SOGO_MAIL_DOMAIN: {{ .domain }}
-
       SOGO_LDAP_HOST: {{ ifthen .ldap.tls "ldaps://" "ldap://" }}{{ .ldap.server }}
       SOGO_LDAP_BIND_DN: {{ .sogo.ldap.bind_dn }}
       SOGO_LDAP_BIND_PASSWORD: {{ .sogo.ldap.bind_pw }}
       # SoGo's term for search base
       SOGO_LDAP_BASE_DN: {{ $search_base }}
-
       ENABLE_DEBUG: "{{ .sogo.debug }}"
-
       POSTGRES_USER: {{ .postgres.user }}
       POSTGRES_PASSWORD: {{ .postgres.password }}
       POSTGRES_DB: {{ .postgres.db }}
@@ -133,7 +139,9 @@ services:
 
   caddy:
     image: dev.cryptec.at:5000/infrastructure/mailstack/caddy:master
+    {{ if .compose.include_build_settings -}}
     build: ./caddy
+    {{ end -}}
     labels:
       <<: *labels
     networks:
@@ -179,13 +187,15 @@ services:
 
   rspamd:
     image: dev.cryptec.at:5000/infrastructure/mailstack/rspamd:master
+    {{ if .compose.include_build_settings -}}
     build: ./rspamd
+    {{ end -}}
     labels:
       <<: *labels
     networks:
-      {{/* Connection to dovecot and postfix */}}
+      {{- /* Connection to dovecot and postfix */}}
       - internal
-       {{/* Connection to redis */}}
+      {{- /* Connection to redis */}}
       - rspamd.database
       {{- if and .rspamd.webinterface.enable (not .rspamd.webinterface.internal) }}
       - rspamd.proxy
@@ -194,7 +204,7 @@ services:
       - expose.mailstack.rspamd
       {{- end }}
     environment:
-      {{/* Because rspamd takes a hashed password all dollarsigns need to be escaped */}}
+      {{- /* Because rspamd takes a hashed password all dollarsigns need to be escaped */}}
       RSPAMD_WEBINTERFACE_PASSWORD: {{ replace .rspamd.controller.password "$" "$$" }}
       RSPAMD_WEBINTERFACE_ENABLE_PASSWORD: {{ replace .rspamd.controller.enable_password "$" "$$" }}
     volumes:
@@ -230,6 +240,7 @@ services:
 
 volumes:
   mailboxes:
+  dovecot-data:
   postgres-data:
   sogo-web:
   rspamd-data:
