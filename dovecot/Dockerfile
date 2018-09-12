@@ -8,11 +8,16 @@ RUN apt-get update && apt-get install dovecot-core dovecot-imapd dovecot-lmtpd \
     dovecot-ldap dovecot-sieve dovecot-managesieved -y
 
 RUN mkdir /var/tmp/dovecot
+
+# Create "default" Diffie Hellman parameters
+RUN openssl dhparam -out /var/tmp/dovecot/dh.pem 2048
+
 COPY ./files/dovecot/ /var/tmp/dovecot/
 
 # Copy sieve scripts
 COPY ./files/sieve/ /usr/lib/dovecot/sieve/
 
+# Setup logging
 RUN ln -s /run/systemd/journal/dev-log /dev/log
 
 COPY ./entrypoint.sh /usr/bin/entrypoint.sh

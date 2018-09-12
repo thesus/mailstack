@@ -2,9 +2,19 @@
 
 set -e
 
-# Well generating diffie-hellman parameters
-# TODO: Move data into volume.
-openssl dhparam -out /etc/dovecot/dh.pem 2048
+if [ ! -f /usr/lib/dovecot/dhparams/dh.pem ]; then
+    echo "File with Diffie Hellman Parameters not found, copying generic one..."
+    cp /var/tmp/dovecot/dh.pem /usr/lib/dovecot/dhparams/dh.pem
+    touch /usr/lib/dovecot/dhparams/generic
+fi
+
+if [ -f /usr/lib/dovecot/dhparams/generic ]; then
+    echo "Generating own parameter file in the background..."
+    openssl dhparam -out /usr/lib/dovecot/dhparams/dh.pem 4096 &> /dev/null && \
+    rm /usr/lib/dovecot/dhparams/generic &> /dev/null &disown
+else
+    echo "Diffie Hellman Parameters found. Nothing will be generated."
+fi
 
 id -u vmail &>/dev/null || useradd -U -M -d /var/vmail vmail
 
