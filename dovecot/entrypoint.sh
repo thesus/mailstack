@@ -10,10 +10,18 @@ fi
 
 if [ -f /usr/lib/dovecot/dhparams/generic ]; then
     echo "Generating own parameter file in the background..."
-    openssl dhparam -out /usr/lib/dovecot/dhparams/dh.pem 4096 &> /dev/null && \
-    rm /usr/lib/dovecot/dhparams/generic &> /dev/null &disown
+    /usr/bin/openssl dhparam -out /usr/lib/dovecot/dhparams/dh.pem 4096 &> /dev/null && \
+    rm /usr/lib/dovecot/dhparams/generic &disown
 else
     echo "Diffie Hellman Parameters found. Nothing will be generated."
+fi
+
+echo "Starting cron process"
+cron
+
+if [ ! -f /var/spool/cron/crontabs/root ]; then
+    echo "Installing Crontab for DH Parameters"
+    crontab /etc/cron.d/dovecot
 fi
 
 id -u vmail &>/dev/null || useradd -U -M -d /var/vmail vmail
