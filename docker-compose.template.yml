@@ -22,7 +22,7 @@ services:
     image: dev.cryptec.at:5000/infrastructure/mailstack/postfix:master
     build: ./postfix
     labels: &labels
-      at.cryptec.dev.infrastructure.mailstack.version: "0.2.2"
+      at.cryptec.dev.infrastructure.mailstack.version: "0.2.3"
     environment:
       POSTFIX_MYORIGIN: {{ .domain }}
       POSTFIX_MYDOMAIN: {{ .domain}}
