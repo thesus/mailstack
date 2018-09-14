@@ -4,7 +4,8 @@ FROM debian:buster-slim
 
 COPY --from=dockerize /usr/local/bin/dockerize /usr/local/bin/dockerize
 
-RUN apt-get update && apt-get install postfix postfix-ldap rsyslog libsasl2-modules -y
+RUN apt-get update && \
+    apt-get install postfix postfix-ldap rsyslog libsasl2-modules ca-certificates -y
 
 RUN ln -s /run/systemd/journal/dev-log /dev/log
 
