@@ -2,7 +2,6 @@ version: "3.5"
 
 {{ define "certificates" }}
 {{- if eq .ssl.certificate "caddy" -}}
-      {{- /* Modify caddy, for "simple certificates" Dovecot isn't happy with fullchain certs at all. Postfix neither. */}}
       {{- $base_path := print "/etc/certificates/acme/acme-v02.api.letsencrypt.org/sites/" .address "/" -}}
       CERT_PATH: {{ $base_path }}{{ .address }}.crt
       KEY_PATH: {{ $base_path }}{{ .address }}.key
