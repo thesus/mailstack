@@ -119,7 +119,7 @@ services:
     restart: always
 
   postgres:
-    image: postgres
+    image: postgres:10
     labels:
       <<: *labels
     restart: always
