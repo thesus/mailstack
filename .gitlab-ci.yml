@@ -10,7 +10,7 @@ pages:
   image: python:3
   stage: deploy
   before_script:
-    - apt update && apt install graphviz
+    - apt update && apt install graphviz -y
     - pip install -r docs/requirements.txt
     - cd docs
   script:
