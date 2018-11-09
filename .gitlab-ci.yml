@@ -1,71 +1,8 @@
 stages:
-    - build
     - deploy
 
 variables:
     TAG: $CI_BUILD_REF_SLUG
-
-.build-docker-image:template: &docker-image-template
-    stage: build
-    tags:
-        - docker-cli
-    before_script:
-        - docker login -u gitlab-ci-token -p $CI_BUILD_TOKEN $CI_REGISTRY
-    script:
-        - docker build --no-cache --pull -t "$CI_REGISTRY_IMAGE/$COMPONENT:$TAG" ./$COMPONENT
-        - docker push "$CI_REGISTRY_IMAGE/$COMPONENT:$TAG"
-        - if [ "$CI_BUILD_REF_SLUG" = "master" ]; then docker tag "$CI_REGISTRY_IMAGE/$COMPONENT:$TAG" "$CI_REGISTRY_IMAGE:latest" && docker push "$CI_REGISTRY_IMAGE:latest"; fi
-
-
-build-docker-image:postfix:
-    variables:
-        COMPONENT: postfix
-    <<: *docker-image-template
-
-build-docker-image:dovecot:
-    variables:
-        COMPONENT: dovecot
-    <<: *docker-image-template
-
-build-docker-image:sogo:
-    variables:
-        COMPONENT: sogo
-    <<: *docker-image-template
-
-build-docker-image:caddy:
-    variables:
-        COMPONENT: caddy
-    <<: *docker-image-template
-
-build-docker-image:rspamd:
-    variables:
-        COMPONENT: rspamd
-    <<: *docker-image-template
-
-
-build-docker-image-util-tls:
-  stage: build
-  tags:
-    - docker-cli
-  before_script:
-    - docker login -u gitlab-ci-token -p $CI_BUILD_TOKEN $CI_REGISTRY
-  script:
-    - docker build --pull -t $CI_REGISTRY_IMAGE/utils/tls:$TAG ./utils/tls
-    - docker push "$CI_REGISTRY_IMAGE/utils/tls:$TAG"
-    - if [ "$CI_BUILD_REF_SLUG" = "master" ]; then docker tag "$CI_REGISTRY_IMAGE/utils/tls:$TAG" "$CI_REGISTRY_IMAGE/utils/tls:latest" && docker push "$CI_REGISTRY_IMAGE/utils/tls:latest"; fi
-
-
-build-docker-image-util-ldap:
-  stage: build
-  tags:
-    - docker-cli
-  before_script:
-    - docker login -u gitlab-ci-token -p $CI_BUILD_TOKEN $CI_REGISTRY
-  script:
-    - docker build --pull -t $CI_REGISTRY_IMAGE/utils/ldap:$TAG ./utils/ldap
-    - docker push "$CI_REGISTRY_IMAGE/utils/ldap:$TAG"
-    - if [ "$CI_BUILD_REF_SLUG" = "master" ]; then docker tag "$CI_REGISTRY_IMAGE/utils/ldap:$TAG" "$CI_REGISTRY_IMAGE/utils/ldap:latest" && docker push "$CI_REGISTRY_IMAGE/utils/ldap:latest"; fi
-
 
 pages:
   tags:
@@ -82,5 +19,3 @@ pages:
   artifacts:
     paths:
       - public
-  only:
-    - master
