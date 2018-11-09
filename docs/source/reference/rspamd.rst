@@ -5,7 +5,7 @@ rspamd
 
 Rspamd is a spam filtering system that analyses each message and give it a spam score, furthermore it allows monitoring the mail-traffic.
 It uses ``redis-server`` to cache and store internal data. Redis is running in the separate docker-container ``redis``
-
+On the first startup rspamd generates a DKIM-Signature. It will be printed in the startup log. In order to sign your messages put the generated Record into your zonefile. The signature ist stored under `/var/lib/rspamd/dkim/2018.txt` together with the corresponding key.
 
 Controller
 ~~~~~~~~~~
