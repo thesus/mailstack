@@ -70,6 +70,11 @@ vars:
       db: sogo
     comment: Database for sogo. All user data such as calendars/addressbooks are stored here.
 
+  compose:
+    default:
+      include_build_settings: true
+    comment: Settings regarding compose file settings
+
 files:
   docker-compose.template.yml: docker-compose.yml
   ldap.template.env: ldap.env

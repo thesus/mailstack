@@ -12,7 +12,7 @@ variables:
     before_script:
         - docker login -u gitlab-ci-token -p $CI_BUILD_TOKEN $CI_REGISTRY
     script:
-        - docker build --pull -t "$CI_REGISTRY_IMAGE/$COMPONENT:$TAG" ./$COMPONENT
+        - docker build --no-cache --pull -t "$CI_REGISTRY_IMAGE/$COMPONENT:$TAG" ./$COMPONENT
         - docker push "$CI_REGISTRY_IMAGE/$COMPONENT:$TAG"
         - if [ "$CI_BUILD_REF_SLUG" = "master" ]; then docker tag "$CI_REGISTRY_IMAGE/$COMPONENT:$TAG" "$CI_REGISTRY_IMAGE:latest" && docker push "$CI_REGISTRY_IMAGE:latest"; fi
 
@@ -73,6 +73,7 @@ pages:
   image: python:3
   stage: deploy
   before_script:
+    - apt update && apt install graphviz -y
     - pip install -r docs/requirements.txt
     - cd docs
   script:
