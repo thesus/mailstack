@@ -9,15 +9,11 @@ COPY --from=dockerize /usr/local/bin/dockerize /usr/local/bin/dockerize
 ARG DEBIAN_FRONTEND=noninteractive
 
 RUN apt-get update && \
-    apt-get install -y --no-install-recommends apt-transport-https gnupg2 ca-certificates dirmngr && \
+    apt-get install -y --no-install-recommends apt-transport-https gnupg2 ca-certificates dirmngr wget && \
     rm -rf /var/lib/apt/lists/*
 
 RUN set -x && \
-    key='3FA347D5E599BE4595CA2576FFA232EDBF21E25E' && \
-    apt-key adv --keyserver keys.gnupg.net --recv-key "$key" || \
-    apt-key adv --keyserver pgp.mit.edu --recv-key "$key" || \
-    apt-key adv --keyserver ha.pool.sks-keyservers.net --recv-key "$key" || \
-    apt-key adv --keyserver hkp://keyserver.ubuntu.com --recv-key "$key"
+    wget -O- https://rspamd.com/apt-stable/gpg.key | apt-key add -
 
 RUN echo "deb http://rspamd.com/apt-stable/ stretch main" > /etc/apt/sources.list.d/rspamd.list
 

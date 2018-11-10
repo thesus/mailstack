@@ -72,7 +72,7 @@ vars:
 
   compose:
     default:
-      include_build_setting: true
+      include_build_settings: true
     comment: Settings regarding compose file settings
 
 files:

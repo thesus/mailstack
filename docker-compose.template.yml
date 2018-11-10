@@ -2,7 +2,6 @@ version: "3.5"
 
 {{ define "certificates" }}
 {{- if eq .ssl.certificate "caddy" -}}
-      {{- /* Modify caddy, for "simple certificates" Dovecot isn't happy with fullchain certs at all. Postfix neither. */}}
       {{- $base_path := print "/etc/certificates/acme/acme-v02.api.letsencrypt.org/sites/" .address "/" -}}
       CERT_PATH: {{ $base_path }}{{ .address }}.crt
       KEY_PATH: {{ $base_path }}{{ .address }}.key
@@ -27,7 +26,7 @@ services:
       at.cryptec.dev.infrastructure.mailstack.version: "0.2.3"
     environment:
       POSTFIX_MYORIGIN: {{ .domain }}
-      POSTFIX_MYDOMAIN: {{ .domain}}
+      POSTFIX_MYDOMAIN: {{ .domain }}
       POSTFIX_VIRTUAL_MAILBOX_DOMAINS: {{ .domain }}
       POSTFIX_LDAP_BIND_DN: {{ .postfix.ldap.bind_dn }}
       POSTFIX_LDAP_BIND_PASSWORD: {{ .postfix.ldap.bind_pw }}
@@ -56,6 +55,7 @@ services:
     labels:
       <<: *labels
     environment:
+      DOVECOT_MAIL_DOMAIN: {{ .domain }}
       DOVECOT_LDAP_BIND_DN: {{ .dovecot.ldap.bind_dn }}
       DOVECOT_LDAP_BIND_PASSWORD: {{ .dovecot.ldap.bind_pw }}
       DOVECOT_LDAP_SEARCH_BASE: {{ $search_base }}
@@ -120,7 +120,7 @@ services:
     restart: always
 
   postgres:
-    image: postgres
+    image: postgres:10
     labels:
       <<: *labels
     restart: always
