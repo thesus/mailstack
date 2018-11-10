@@ -11,7 +11,7 @@ RUN apt-get update && \
     rm -rf /var/lib/apt/lists/*
 
 RUN set -x && \
-    key='0x19cda6a9810273c4' && \
+    key='0x810273C4' && \
     apt-key adv --keyserver keys.gnupg.net --recv-key "$key" || \
     apt-key adv --keyserver pgp.mit.edu --recv-key "$key" || \
     apt-key adv --keyserver ha.pool.sks-keyservers.net --recv-key "$key" || \
