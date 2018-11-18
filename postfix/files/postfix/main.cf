@@ -1,4 +1,4 @@
-smtpd_banner = $myhostname ESMT $mail_name (Ubuntu)
+smtpd_banner = $myhostname ESMT
 biff = no
 append_dot_mydomain = no
 readme_directory = no
@@ -18,7 +18,9 @@ inet_protocols = all
 
 mynetworks = 127.0.0.0/8 postfix localhost mailstack_sogo_1.mailstack_internal
 mydestination = localhost.$mydomain, localhost
+
 myorigin = {{ .Env.POSTFIX_MYORIGIN }}
+myhostname = {{ .ENV.POSTFIX_MYHOSTNAME }}
 
 # TLS
 smtpd_use_tls = yes
