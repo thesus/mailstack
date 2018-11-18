@@ -27,6 +27,7 @@ services:
     environment:
       POSTFIX_MYORIGIN: {{ .domain }}
       POSTFIX_MYDOMAIN: {{ .domain }}
+      POSTFIX_MYHOSTNAME: {{ .address }}
       POSTFIX_VIRTUAL_MAILBOX_DOMAINS: {{ .domain }}
       POSTFIX_LDAP_BIND_DN: {{ .postfix.ldap.bind_dn }}
       POSTFIX_LDAP_BIND_PASSWORD: {{ .postfix.ldap.bind_pw }}
