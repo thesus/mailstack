@@ -78,8 +78,8 @@ Settings overview
   +---------------------------------------+-------------------------------------+--------------------------------------------------------------------------------------------------------------------+
   | ``address``                           | none                                | Used as an external domain for your SoGo webinterface. if ``exposed`` is true and Caddy is supposed to handle      |
   |                                       |                                     | certificates, this address has to be publicly known and the A (or AAAA) record has to point to an IP address where |
-  |                                       |                                     | port 80 and 443 are forwarded to the Caddy container. Furthermore it's used for the smtp banner of postfix.
-  |                      |                |                                     | It'll match the `myhostname` setting of postfix.                                                                   |
+  |                                       |                                     | port 80 and 443 are forwarded to the Caddy container. Furthermore it's used for the smtp banner of postfix.        |
+  |                                       |                                     | It'll match the `myhostname` setting of postfix.                                                                   |
   +---------------------------------------+-------------------------------------+--------------------------------------------------------------------------------------------------------------------+
   | ``ldap.search_base``                  | ``ou=People,dc=example,dc=com``     | User objects will be searched within this LDAP node.                                                               |
   +---------------------------------------+-------------------------------------+--------------------------------------------------------------------------------------------------------------------+
