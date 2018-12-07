@@ -20,7 +20,7 @@ mynetworks = 127.0.0.0/8 postfix localhost mailstack_sogo_1.mailstack_internal
 mydestination = localhost.$mydomain, localhost
 
 myorigin = {{ .Env.POSTFIX_MYORIGIN }}
-myhostname = {{ .ENV.POSTFIX_MYHOSTNAME }}
+myhostname = {{ .Env.POSTFIX_MYHOSTNAME }}
 
 # TLS
 smtpd_use_tls = yes
@@ -45,6 +45,7 @@ virtual_transport = lmtp:dovecot:24
 virtual_mailbox_maps = proxy:ldap:/etc/postfix/ldap_virtual_recipients.cf
 local_recipient_maps = $virtual_mailbox_maps
 virtual_mailbox_domains = {{ .Env.POSTFIX_VIRTUAL_MAILBOX_DOMAINS }}
+message_size_limit = 20480000
 
 # SASL Authentication
 smtpd_sasl_type = dovecot
