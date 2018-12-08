@@ -12,7 +12,7 @@ smtpd_relay_restrictions =
 
 postscreen_greet_action = enforce
 
-recipient_delimiter =
+recipient_delimiter = +
 inet_interfaces = all
 inet_protocols = all
 
