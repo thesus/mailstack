@@ -65,6 +65,8 @@ services:
     ports:
       - "143:143"
       - "993:993"
+      - "110:110"
+      - "995:995"
     volumes:
       - type: volume
         source: mailboxes
