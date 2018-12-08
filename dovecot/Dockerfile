@@ -4,7 +4,7 @@ FROM debian:buster-slim
 
 COPY --from=dockerize /usr/local/bin/dockerize /usr/local/bin/dockerize
 
-RUN apt-get update && apt-get install dovecot-core dovecot-imapd dovecot-lmtpd \
+RUN apt-get update && apt-get install dovecot-core dovecot-imapd dovecot-pop3d dovecot-lmtpd \
     dovecot-ldap dovecot-sieve dovecot-managesieved cron curl -y
 
 RUN mkdir /var/tmp/dovecot
