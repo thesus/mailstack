@@ -10,7 +10,8 @@ fi
 
 if [ -f /usr/lib/dovecot/dhparams/generic ]; then
     echo "Generating own parameter file in the background..."
-    /usr/bin/openssl dhparam -out /usr/lib/dovecot/dhparams/dh.pem 4096 &> /dev/null && \
+    /usr/bin/openssl dhparam -out /usr/lib/dovecot/dhparams/dh_full.pem 4096 &> /dev/null && \
+    cp /usr/lib/dovecot/dhparams/dh_full.pem /usr/lib/dovecot/dhparams/dh.pem && \
     rm /usr/lib/dovecot/dhparams/generic &disown
 else
     echo "Diffie Hellman Parameters found. Nothing will be generated."
