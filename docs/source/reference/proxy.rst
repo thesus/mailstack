@@ -1,7 +1,11 @@
 Proxy
 =====
 
-If you want to operate the mailstack behind a proxy, we recommend you to check out caddy. To setup an external caddy that also manages certificates use the following docker-compose.yml and Caddyfile. For additional configuration of rspamd please see here: :ref:`reference-rspamd`. Proxying of rspamd is optional though.
+If you want to operate the mailstack behind a proxy, we recommend you to check out `caddy`_. To setup an external caddy which also manages certificates use the following docker-compose.yml and Caddyfile. For additional configuration of rspamd please see here: :ref:`reference-rspamd`. Proxying of rspamd is optional though.
+
+
+.. _caddy: https://github.com/mholt/caddy
+
 
 .. code-block:: yaml
    :caption: Compose file for external caddy proxy.
