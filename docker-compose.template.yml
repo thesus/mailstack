@@ -267,6 +267,7 @@ networks:
   {{- end }}
 
 
+  {{- if not .ldap.included }}
   auth.mailstack.postfix:
     external:
       name: auth.mailstack.postfix
@@ -276,6 +277,7 @@ networks:
   auth.mailstack.sogo:
     external:
       name: auth.mailstack.sogo
+  {{- end }}
 
   {{- if .caddy.internal }}
   expose.mailstack.caddy:

@@ -17,7 +17,16 @@ if [ $1 = "init" ]; then
     ldapadd -D $ADMIN -h ldap:389 -w $ADMIN_PW -f base.ldif
     ldapadd -D $ADMIN -h ldap:389 -w $ADMIN_PW -f services.ldif
 elif [ $1 = "add" ]; then
-    ldif=`cat`
+    # Allow input via pipe or as a filename
+    if [ -z "$2" ]; then
+        ldif=`cat`
+    else
+        ldif=`cat $2`
+        if [ -z "$ldif" ]; then
+            exit 1
+        fi
+
+    fi
 
     echo "Adding...the following ldif"
     echo "---------------------------------"
