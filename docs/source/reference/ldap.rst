@@ -3,7 +3,7 @@
 LDAP-Server
 -----------
 
-The internal LDAP-Server is a OpenLDAP living in a docker container. The Repository with further information can be found `here`_.
+The internal LDAP-Server is an OpenLDAP living in a docker container. The Repository with further information can be found `here`_.
 In order to use the Directory some things need to be prepoulated. Luckily there is a tool, that can help you with this task. To setup
 the initial database use the following command:
 
