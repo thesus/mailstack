@@ -1,3 +1,4 @@
+# Greeting banner on connect
 smtpd_banner = $myhostname ESMT
 biff = no
 append_dot_mydomain = no
@@ -10,17 +11,26 @@ smtpd_relay_restrictions =
         permit_mynetworks
         reject_unauth_destination
 
+# Expect other servers wait for the greeting, otherwise reject.
 postscreen_greet_action = enforce
 
+# Allow extended adresses user+id@example.tld will be delivered to user.
 recipient_delimiter = +
+
+# Allow IPv4 and IPv6 on all interfaces
 inet_interfaces = all
 inet_protocols = all
 
+# Allow direct connection between sogo and postfix
 mynetworks = 127.0.0.0/8 postfix localhost mailstack_sogo_1.mailstack_internal
 mydestination = localhost.$mydomain, localhost
 
 myorigin = {{ .Env.POSTFIX_MYORIGIN }}
 myhostname = {{ .Env.POSTFIX_MYHOSTNAME }}
+
+# Message size (100MB)
+message_size_limit = 104857600
+virtual_mailbox_limit = 104857600
 
 # TLS
 smtpd_use_tls = yes
