@@ -1,4 +1,3 @@
-import atexit
 import subprocess
 
 
@@ -7,21 +6,22 @@ class Compose:
     Manages an instance of compose.
     """
 
-    def __init__(self, composefile, DEBUG=False):
-        self.base_command = ["docker-compose", "-f", composefile]
-
-        # Automatically dismantle compose on process exit.
-        if not DEBUG:
-            atexit.register(self.cleanup)
+    def __init__(self, composefile):
+        self.base_command = [
+            "docker-compose",
+            "--log-level",
+            "ERROR",
+            "-f",
+            composefile
+        ]
 
     def cmd(self, arg):
-        if type(arg) == list:
-            l = list(self.base_command)
-            l.extend(arg)
-        else:
-            l = list(self.base_command)
-            l.append(arg)
+        l = list(self.base_command)
+
+        l.extend(arg) if type(arg) is list else l.append(arg)
+
         print(l)
+
         return l
 
     def pull(self):
@@ -31,11 +31,17 @@ class Compose:
         )
 
     def create(self):
-        """ Starts the containers specified in Compose file. """
+        """ Creates the containers specified in Compose file. """
         # Create containers but don't start them.
         # They will be started gradually to allow a controlled setup.
         subprocess.run(
-            self.cmd(["up", "--no-start"]),
+            self.cmd(["up", "--no-start", "--build"]),
+        )
+
+    def start(self):
+        """ Starts the containers in a Compose file. """
+        subprocess.run(
+            self.cmd(["up", "-d"])
         )
 
     def get_ids(self):
@@ -51,5 +57,5 @@ class Compose:
     def cleanup(self):
         """ Remove compose instance. """
         subprocess.run(
-            self.cmd(["--log-level", "CRITICAL", "down", "-v"])
+            self.cmd(["down", "-v"])
         )

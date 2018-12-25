@@ -1,8 +1,7 @@
-import atexit
 import docker
 
-from compose import Compose
-from utils import load_env_file
+from mailstack import utils
+from mailstack.compose import Compose
 
 # setup docker client
 client = docker.from_env()
@@ -14,18 +13,21 @@ class Setup:
     Setup class to create and manage a mailstack instance for testing purposes.
     """
 
-    def __init__(self, composefile):
+    def __init__(self,
+            composefile,
+            tmp_path):
         """ Constructs an setup instance. """
         self.compose = Compose(composefile)
+        self.tmp_path = tmp_path
 
         # Setting up network
         self.network_names = [
             'expose.mailstack.caddy',
             'expose.mailstack.rspamd'
         ]
-
         self.networks = []
         # self.setup_networks()
+
 
         # Setting up volumes
         self.volume_names = [
@@ -33,7 +35,10 @@ class Setup:
         ]
         self.volumes = []
         # self.setup_volumes()
+
         self.containers = []
+        self.users = []
+
 
     def setup_volumes(self):
         """ Create volumes specified in __init__ """
@@ -87,34 +92,74 @@ class Setup:
         # Filter ldap container and start it.
         ldap = self.find_container("mailstack_ldap_1")
         ldap.start()
-
-        print(load_env_file("ldap.env"))
         # Start helper container to feed passwords and default users in the ldap.
         client.containers.run(
                 image=REGISTRY_BASE + "utils/ldap:latest",
                 command="init",
                 auto_remove=True,
-                environment=load_env_file("ldap.env"), # TODO: Add loader for environment files.
+                environment=utils.load_env_file("ldap.env"),
                 network="mailstack_internal"
         )
 
-    def setup_user(self, first_name, last_name, email_address):
+    def setup_user(self, first_name, last_name, identifier, email_address):
         """ Creates an entry for a given user in the active directory """
 
-        client.containers.run(
-            image=REGISTRY_BASE + "utils/ldap:latest",
-            command="add",
-            auto_remove=True,
-            volumes={
-                '/tmp/user.ldif': {
-                    'bind': '/user.ldif', 'mode': 'ro'
-                }
-            },
-            environment={}, # TODO: Fix environment too!
-            network="mailstack_internal"
+        user = {
+            "last_name": last_name,
+            "first_name": first_name,
+            "identifier": identifier,
+            "email_address": email_address,
+            "password": utils.create_password()
+        }
+
+        self.users.append(user)
+
+        # Compile ldif
+        utils.compile_template(
+            "test/user.ldif.template",
+            self.tmp_path / "user.ldif",
+            user
         )
 
-        # cat user.ldif | docker run -i --env-file ldap.env --network mailstack_internal
+        # Mount for ldif
+        mount = docker.types.Mount(
+            target='/var/tmp',
+            source=str(self.tmp_path),
+            type="bind",
+            read_only=True
+        )
+
+        # Run container
+        container = client.containers.run(
+            image=REGISTRY_BASE + "utils/ldap:latest",
+            command="add /var/tmp/user.ldif",
+            auto_remove=True,
+            mounts=[mount],
+            environment=utils.load_env_file("ldap.env"),
+            network="mailstack_internal",
+            detach=True
+        )
+
+        for line in container.logs(stream=True):
+            print(line.strip())
+
+    def setup_certificates(self):
+        client.containers.run(
+            image=REGISTRY_BASE + "utils/tls:latest",
+            auto_remove=True,
+            command=[
+                "openssl", "req", "-x509", "-newkey", "rsa:4096", "-nodes",
+                "-keyout", "/etc/certificates/key.pem", "-out", "/etc/certificates/cert.pem",
+                "-subj", "/C=US/ST=A/L=B/O=C/CN=example.com",
+                "-days", "365"
+            ],
+            volumes={
+                'certificates': {
+                    'bind': '/etc/certificates',
+                    'mode': 'rw'
+                }
+            }
+        )
 
     def dismantle(self):
         """ Removes containers and volumes that are marked as internal. """
