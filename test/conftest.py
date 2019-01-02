@@ -2,7 +2,10 @@ import pytest
 import time
 
 from mailstack.containers import Setup
-from mailstack.utils import create_imap_connection
+from mailstack.utils import (
+        create_imap_connection,
+        create_smtp_connection
+)
 
 @pytest.fixture(scope="session")
 def compose(request, tmpdir_factory):
@@ -55,13 +58,7 @@ def imap_connection(compose):
 
 @pytest.fixture(scope="session")
 def smtp_connection(compose):
-    import smtplib
-
-    with smtplib.SMTP("localhost", 587) as smtp:
-        smtp.ehlo()
-        smtp.starttls()
-        smtp.ehlo()
-
+    with create_smtp_connection() as smtp:
         smtp.login(
             compose.users[0]['email_address'],
             compose.users[0]['password']

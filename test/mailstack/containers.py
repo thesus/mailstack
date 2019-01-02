@@ -5,8 +5,10 @@ from mailstack.compose import Compose
 
 # setup docker client
 client = docker.from_env()
+
 REGISTRY_BASE = "dev.cryptec.at:5000/infrastructure/mailstack/"
 
+LDAP_IMAGE = REGISTRY_BASE + "utils/ldap:latest"
 
 class Setup:
     """
@@ -84,6 +86,7 @@ class Setup:
             )
 
     def find_container(self, name):
+        """Simple search to find a container by name in the current instance."""
         return next(container for container in self.containers if container.name == name)
 
     def setup_ldap(self):
@@ -94,7 +97,9 @@ class Setup:
         ldap.start()
         # Start helper container to feed passwords and default users in the ldap.
         client.containers.run(
-                image=REGISTRY_BASE + "utils/ldap:latest",
+                # image=REGISTRY_BASE + "utils/ldap:latest",
+                # Fixing image to locally build one. For the sake of (local) testing. TODO: Image paths in configuration.
+                image=LDAP_IMAGE,
                 command="init",
                 auto_remove=True,
                 environment=utils.load_env_file("ldap.env"),
@@ -131,7 +136,7 @@ class Setup:
 
         # Run container
         container = client.containers.run(
-            image=REGISTRY_BASE + "utils/ldap:latest",
+            image=LDAP_IMAGE,
             command="add /var/tmp/user.ldif",
             auto_remove=True,
             mounts=[mount],
