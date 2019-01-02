@@ -32,6 +32,7 @@ services:
       POSTFIX_LDAP_BIND_DN: {{ .postfix.ldap.bind_dn }}
       POSTFIX_LDAP_BIND_PASSWORD: {{ .postfix.ldap.bind_pw }}
       POSTFIX_LDAP_SEARCH_BASE: {{ $search_base }}
+      POSTFIX_LDAP_USERNAME_ATTRIBUTE: {{ .ldap.username_attribute }}
       POSTFIX_LDAP_HOST: {{ .ldap.server }}
       POSTFIX_LDAP_DOMAIN: {{ .domain }}
       {{ template "certificates" .}}
@@ -60,6 +61,8 @@ services:
       DOVECOT_LDAP_BIND_DN: {{ .dovecot.ldap.bind_dn }}
       DOVECOT_LDAP_BIND_PASSWORD: {{ .dovecot.ldap.bind_pw }}
       DOVECOT_LDAP_SEARCH_BASE: {{ $search_base }}
+      DOVECOT_LDAP_USER_OBJECT_CLASS: {{ .ldap.user_objectclass }}
+      DOVECOT_LDAP_USERNAME_ATTRIBUTE: {{ .ldap.username_attribute }}
       DOVECOT_LDAP_HOST: {{ .ldap.server }}
       {{ template "certificates" .}}
     ports:
@@ -98,6 +101,7 @@ services:
       SOGO_LDAP_BIND_PASSWORD: {{ .sogo.ldap.bind_pw }}
       # SoGo's term for search base
       SOGO_LDAP_BASE_DN: {{ $search_base }}
+      SOGO_LDAP_USERNAME_ATTRIBUTE: {{ .ldap.username_attribute }}
       ENABLE_DEBUG: "{{ .sogo.debug }}"
       POSTGRES_USER: {{ .postgres.user }}
       POSTGRES_PASSWORD: {{ .postgres.password }}
