@@ -7,4 +7,4 @@ server_host = {{ .Env.POSTFIX_LDAP_HOST }}
 search_base = {{ .Env.POSTFIX_LDAP_SEARCH_BASE }}
 domain = {{ .Env.POSTFIX_LDAP_DOMAIN }}
 query_filter = mail=%s
-result_attribute = uid
+result_attribute = {{ .Env.POSTFIX_LDAP_USERNAME_ATTRIBUTE }}
