@@ -101,6 +101,7 @@ services:
       SOGO_LDAP_BIND_PASSWORD: {{ .sogo.ldap.bind_pw }}
       # SoGo's term for search base
       SOGO_LDAP_BASE_DN: {{ $search_base }}
+      SOGO_LDAP_USERNAME_ATTRIBUTE: {{ .ldap.username_attribute }}
       ENABLE_DEBUG: "{{ .sogo.debug }}"
       POSTGRES_USER: {{ .postgres.user }}
       POSTGRES_PASSWORD: {{ .postgres.password }}
