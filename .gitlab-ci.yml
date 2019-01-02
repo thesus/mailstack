@@ -1,5 +1,6 @@
 stages:
     - build
+    - test
     - deploy
 
 variables:
@@ -66,6 +67,14 @@ build-docker-image-util-ldap:
     - docker push "$CI_REGISTRY_IMAGE/utils/ldap:$TAG"
     - if [ "$CI_BUILD_REF_SLUG" = "master" ]; then docker tag "$CI_REGISTRY_IMAGE/utils/ldap:$TAG" "$CI_REGISTRY_IMAGE/utils/ldap:latest" && docker push "$CI_REGISTRY_IMAGE/utils/ldap:latest"; fi
 
+test-docker-images:
+  stage: test
+  tags:
+    - docker-cli
+  before_script:
+    - pip install -r test/requirements.txt
+  script:
+    - pytest
 
 pages:
   tags:
