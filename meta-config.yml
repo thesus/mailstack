@@ -3,6 +3,10 @@ vars:
     default: example.com
     comment: Default Domain
 
+  additional_domains:
+    default: []
+    comment: additional domains you want to send to and receive mail from.
+
   address:
     default: mail.example.com
     comment: Web address

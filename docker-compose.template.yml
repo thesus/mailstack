@@ -14,6 +14,8 @@ version: "3.5"
 
 {{- $ldap := print "dc=" (replace .domain "." ",dc=") -}}
 {{- $search_base := ifthen .ldap.included (print "ou=People," $ldap) .ldap.search_base -}}
+{{- define "additional_domains_comma"}}{{ range .additional_domains }}, {{ .x }}{{end}}{{end}}
+{{- define "additional_domains_space"}}{{ range .additional_domains }} {{ .x }}{{end}}{{end}}
 
 
 services:
@@ -28,13 +30,13 @@ services:
       POSTFIX_MYORIGIN: {{ .domain }}
       POSTFIX_MYDOMAIN: {{ .domain }}
       POSTFIX_MYHOSTNAME: {{ .address }}
-      POSTFIX_VIRTUAL_MAILBOX_DOMAINS: {{ .domain }}
+      POSTFIX_VIRTUAL_MAILBOX_DOMAINS: {{ .domain }} {{- template "additional_domains_comma" . }}
       POSTFIX_LDAP_BIND_DN: {{ .postfix.ldap.bind_dn }}
       POSTFIX_LDAP_BIND_PASSWORD: {{ .postfix.ldap.bind_pw }}
       POSTFIX_LDAP_SEARCH_BASE: {{ $search_base }}
       POSTFIX_LDAP_USERNAME_ATTRIBUTE: {{ .ldap.username_attribute }}
       POSTFIX_LDAP_HOST: {{ .ldap.server }}
-      POSTFIX_LDAP_DOMAIN: {{ .domain }}
+      POSTFIX_LDAP_DOMAIN: {{ .domain }} {{- template "additional_domains_comma" . }}
       {{ template "certificates" .}}
     ports:
       - "25:25"

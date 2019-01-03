@@ -76,6 +76,10 @@ Settings overview
   | ``domain``                            | none                                | Sets Postfix' ``myorigin``, ``mydomain``, ``virtual_mailbox_domains``, and SoGo's ``mail_domain`` to this value.   |
   |                                       |                                     | Set this to the domain you are going to setup e-mail services for.                                                 |
   +---------------------------------------+-------------------------------------+--------------------------------------------------------------------------------------------------------------------+
+  | ``additional_domains``                | []                                  | Sets Postfix' ``virtual_mailbox_domains`` and allows LDAP authentication for these email addresses belonging to    |
+  |                                       |                                     | this domain.                                                                                                       |
+  |                                       |                                     | Set this to an additional list domains you are going to setup e-mail services for. Do *not* also add ``domain``.   |
+  +---------------------------------------+-------------------------------------+--------------------------------------------------------------------------------------------------------------------+
   | ``address``                           | none                                | Used as an external domain for your SoGo webinterface. if ``exposed`` is true and Caddy is supposed to handle      |
   |                                       |                                     | certificates, this address has to be publicly known and the A (or AAAA) record has to point to an IP address where |
   |                                       |                                     | port 80 and 443 are forwarded to the Caddy container. Furthermore it's used for the smtp banner of postfix.        |
