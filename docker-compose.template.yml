@@ -172,11 +172,11 @@ services:
       {{- end }}
     {{- if not .caddy.internal }}
     ports:
-      - "0.0.0.0:80:80"
-      - "0.0.0.0:443:443"
+      - "80:80"
+      - "443:443"
       {{- /* If no domain is set, the webinterface is enabled and not directly published */ -}}
       {{- if and (not .rspamd.webinterface.domain) (and .rspamd.webinterface.enable (not .rspamd.webinterface.internal)) }}
-      - "0.0.0.0:11334:11334"
+      - "11334:11334"
       {{- end }}
     {{- end }}
     environment:
