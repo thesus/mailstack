@@ -106,7 +106,9 @@ base = {{ .Env.DOVECOT_LDAP_SEARCH_BASE }}
 #
 # There are also other special fields which can be returned, see
 # http://wiki2.dovecot.org/UserDatabase/ExtraFields
-user_attrs =
+user_attrs = \
+  =home=/var/vmail/mailboxes/%{ldap:{{ .Env.DOVECOT_LDAP_USERNAME_ATTRIBUTE }}}, \
+  =mail=maildir:~/mail
 
 # Filter for user lookup. Some variables can be used (see
 # http://wiki2.dovecot.org/Variables for full list):
@@ -114,7 +116,6 @@ user_attrs =
 #   %n - user part in user@domain, same as %u if there's no domain
 #   %d - domain part in user@domain, empty if user there's no domain
 user_filter = (&(objectClass={{ .Env.DOVECOT_LDAP_USER_OBJECT_CLASS }})(|({{ .Env.DOVECOT_LDAP_USERNAME_ATTRIBUTE }}=%n)(mail=%u)))
-
 
 # Password checking attributes:
 #  user: Virtual user name (user@domain), if you wish to change the
