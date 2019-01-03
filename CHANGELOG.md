@@ -1,3 +1,11 @@
+Version 0.3.0
+=============
+
+- Spam/Ham-learning via sieve scripts
+- Simplification of container builder
+- Dependency pinning
+
+
 Version 0.2.0
 =============
 
