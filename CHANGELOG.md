@@ -1,3 +1,9 @@
+Upcoming version
+================
+
+- Added support for multiple domains.
+
+
 Version 0.2.0
 =============
 
