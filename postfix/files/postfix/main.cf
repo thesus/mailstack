@@ -55,6 +55,7 @@ virtual_transport = lmtp:dovecot:24
 virtual_mailbox_maps = proxy:ldap:/etc/postfix/ldap_virtual_recipients.cf
 local_recipient_maps = $virtual_mailbox_maps
 virtual_mailbox_domains = {{ .Env.POSTFIX_VIRTUAL_MAILBOX_DOMAINS }}
+virtual_alias_maps = hash:/etc/postfix/aliases
 
 # SASL Authentication
 smtpd_sasl_type = dovecot

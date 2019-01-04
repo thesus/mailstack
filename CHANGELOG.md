@@ -2,6 +2,7 @@ Upcoming version
 ================
 
 - Added support for multiple domains.
+- Added support for simple aliases. No querying from LDAP, yet.
 
 
 Version 0.3.0

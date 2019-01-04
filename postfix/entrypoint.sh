@@ -12,4 +12,6 @@ chmod 755 /etc/postfix
 
 service rsyslog start
 
+postmap /etc/postfix/aliases
+
 exec /usr/local/bin/dockerize -template /var/tmp/postfix/:/etc/postfix/ -wait tcp://dovecot:3569 -wait tcp://dovecot:24 -timeout 30s postfix start-fg
