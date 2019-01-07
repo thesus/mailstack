@@ -2,6 +2,7 @@ Upcoming version
 ================
 
 - Added support for multiple domains.
+- Added configuration for SOGo's worker count.
 
 
 Version 0.3.0
