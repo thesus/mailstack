@@ -104,6 +104,9 @@ services:
       # SoGo's term for search base
       SOGO_LDAP_BASE_DN: {{ $search_base }}
       SOGO_LDAP_USERNAME_ATTRIBUTE: {{ .ldap.username_attribute }}
+      SOGO_APPOINTMENT_SEND_EMAIL_NOTIFICATIONS: "{{ .sogo.appointment_send_email_notifications }}"
+      SOGO_ACLS_SEND_EMAIL_NOTIFICATIONS: "{{ .sogo.acls_send_email_notifications }}"
+      SOGO_FOLDERS_SEND_EMAIL_NOTIFICATIONS: "{{ .sogo.folders_send_email_notifications }}"
       ENABLE_DEBUG: "{{ .sogo.debug }}"
       POSTGRES_USER: {{ .postgres.user }}
       POSTGRES_PASSWORD: {{ .postgres.password }}

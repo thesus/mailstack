@@ -67,6 +67,9 @@ vars:
         bind_dn: uid=sogo,ou=Services,dc=example,dc=com
         bind_pw: apfel
       debug: 'NO'
+      appointment_send_email_notifications: 'NO'
+      acls_send_email_notifications: 'NO'
+      folders_send_email_notifications: 'NO'
     comment: SOGo settings
 
   postgres:
