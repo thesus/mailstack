@@ -49,6 +49,10 @@ services:
         source: certificates
         target: /etc/certificates
         read_only: yes
+      - type: bind
+        source: ./postfix-aliases
+        target: /etc/postfix/aliases
+        read_only: yes
     restart: always
 
   dovecot:
