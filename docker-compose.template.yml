@@ -108,6 +108,7 @@ services:
       # SoGo's term for search base
       SOGO_LDAP_BASE_DN: {{ $search_base }}
       SOGO_LDAP_USERNAME_ATTRIBUTE: {{ .ldap.username_attribute }}
+      SOGO_WORKER_COUNT: {{ .sogo.worker_count }}
       ENABLE_DEBUG: "{{ .sogo.debug }}"
       POSTGRES_USER: {{ .postgres.user }}
       POSTGRES_PASSWORD: {{ .postgres.password }}

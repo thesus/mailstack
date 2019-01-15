@@ -67,6 +67,7 @@ vars:
         bind_dn: uid=sogo,ou=Services,dc=example,dc=com
         bind_pw: apfel
       debug: 'NO'
+      worker_count: 3
     comment: SOGo settings
 
   postgres:
