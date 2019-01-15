@@ -72,7 +72,8 @@ test-docker-images:
   tags:
     - docker-cli
   before_script:
-    - pip install -r test/requirements.txt
+    - apt update && apt instal python3-dev
+    - pip3 install -r test/requirements.txt
   script:
     - pytest
 
