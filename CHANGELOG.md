@@ -4,6 +4,7 @@ Upcoming version
 - Added support for multiple domains.
 - Added support for simple aliases. No querying from LDAP, yet.
 - Added configuration for SOGo's worker count.
+- Added configuration for SOGo's notification settings.
 
 
 Version 0.3.0
