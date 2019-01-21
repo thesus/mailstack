@@ -48,6 +48,7 @@ vars:
       ldap:
         bind_dn: uid=dovecot,ou=Services,dc=example,dc=com
         bind_pw: apfel
+      imap_login_performance_mode: "NO"
     comment: Dovecot settings
 
   rspamd:

@@ -70,6 +70,7 @@ services:
       DOVECOT_LDAP_USER_OBJECT_CLASS: {{ .ldap.user_objectclass }}
       DOVECOT_LDAP_USERNAME_ATTRIBUTE: {{ .ldap.username_attribute }}
       DOVECOT_LDAP_HOST: {{ .ldap.server }}
+      DOVECOT_IMAP_LOGIN_PERFORMANCE_MODE: "{{ .dovecot.imap_login_performance_mode }}"
       {{ template "certificates" .}}
     ports:
       - "143:143"
