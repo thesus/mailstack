@@ -1,4 +1,4 @@
-Upcoming version
+Version 0.4.0
 ================
 
 - Added support for multiple domains.
@@ -6,6 +6,8 @@ Upcoming version
 - Added configuration for SOGo's worker count.
 - Added configuration for SOGo's notification settings.
 - Added configuration for publishing Dovecot's Sieve port.
+- Added support for addresess with a recipient delimiter
+- Fixes in compose file
 
 
 Version 0.3.0
