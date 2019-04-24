@@ -43,7 +43,9 @@ services:
       - "587:587"
     networks:
       - internal
+      {{- if not .ldap.included }}
       - auth.mailstack.postfix
+      {{- end }}
     volumes:
       - type: volume
         source: certificates
@@ -93,7 +95,9 @@ services:
         read_only: yes
     networks:
       - internal
+      {{- if not .ldap.included }}
       - auth.mailstack.dovecot
+      {{- end }}
     restart: always
 
   sogo:
@@ -125,7 +129,9 @@ services:
       - database
       - sogo.cache
       - sogo.proxy
+      {{- if not .ldap.included }}
       - auth.mailstack.sogo
+      {{- end }}
     volumes:
       - type: volume
         source: sogo-web
