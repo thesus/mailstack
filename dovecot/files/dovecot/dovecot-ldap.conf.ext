@@ -106,14 +106,16 @@ base = {{ .Env.DOVECOT_LDAP_SEARCH_BASE }}
 #
 # There are also other special fields which can be returned, see
 # http://wiki2.dovecot.org/UserDatabase/ExtraFields
-user_attrs =
+user_attrs = \
+  =home=/var/vmail/mailboxes/%{ldap:{{ .Env.DOVECOT_LDAP_USERNAME_ATTRIBUTE }}}, \
+  =mail=maildir:~/mail
 
 # Filter for user lookup. Some variables can be used (see
 # http://wiki2.dovecot.org/Variables for full list):
 #   %u - username
 #   %n - user part in user@domain, same as %u if there's no domain
 #   %d - domain part in user@domain, empty if user there's no domain
-user_filter = (&(objectClass=inetOrgPerson)(uid=%n))
+user_filter = (&(objectClass={{ .Env.DOVECOT_LDAP_USER_OBJECT_CLASS }})(|({{ .Env.DOVECOT_LDAP_USERNAME_ATTRIBUTE }}=%n)(mail=%u)))
 
 # Password checking attributes:
 #  user: Virtual user name (user@domain), if you wish to change the
@@ -121,7 +123,7 @@ user_filter = (&(objectClass=inetOrgPerson)(uid=%n))
 #  password: Password, may optionally start with {type}, eg. {crypt}
 # There are also other special fields which can be returned, see
 # http://wiki2.dovecot.org/PasswordDatabase/ExtraFields
-pass_attrs = uid=user,userPassword=password
+pass_attrs = {{ .Env.DOVECOT_LDAP_USERNAME_ATTRIBUTE }}=user,userPassword=password
 
 # If you wish to avoid two LDAP lookups (passdb + userdb), you can use
 # userdb prefetch instead of userdb ldap in dovecot.conf. In that case you'll
@@ -131,7 +133,7 @@ pass_attrs = uid=user,userPassword=password
 #  homeDirectory=userdb_home,uidNumber=userdb_uid,gidNumber=userdb_gid
 
 # Filter for password lookups
-pass_filter = (&(objectClass=inetOrgPerson)(uid=%n))
+pass_filter = (&(objectClass={{ .Env.DOVECOT_LDAP_USER_OBJECT_CLASS }})({{ .Env.DOVECOT_LDAP_USERNAME_ATTRIBUTE }}=%n))
 
 # Attributes and filter to get a list of all users
 #iterate_attrs = uid=user

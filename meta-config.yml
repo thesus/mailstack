@@ -3,6 +3,10 @@ vars:
     default: example.com
     comment: Default Domain
 
+  additional_domains:
+    default: []
+    comment: additional domains you want to send to and receive mail from.
+
   address:
     default: mail.example.com
     comment: Web address
@@ -14,6 +18,8 @@ vars:
       search_base: ou=People,dc=example,dc=com
       server: ldap:389
       tls: false
+      username_attribute: uid
+      user_objectclass: inetOrgPerson
     comment: "Commonly shared ldap settings, don't set ldap protocol here."
 
   ssl:
@@ -42,6 +48,8 @@ vars:
       ldap:
         bind_dn: uid=dovecot,ou=Services,dc=example,dc=com
         bind_pw: apfel
+      imap_login_performance_mode: "NO"
+      publish_sieve_port: "NO"
     comment: Dovecot settings
 
   rspamd:
@@ -61,6 +69,10 @@ vars:
         bind_dn: uid=sogo,ou=Services,dc=example,dc=com
         bind_pw: apfel
       debug: 'NO'
+      worker_count: 3
+      appointment_send_email_notifications: 'NO'
+      acls_send_email_notifications: 'NO'
+      folders_send_email_notifications: 'NO'
     comment: SOGo settings
 
   postgres:
@@ -72,7 +84,7 @@ vars:
 
   compose:
     default:
-      include_build_settings: true
+      include_build_settings: false
     comment: Settings regarding compose file settings
 
 files:

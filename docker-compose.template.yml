@@ -14,6 +14,8 @@ version: "3.5"
 
 {{- $ldap := print "dc=" (replace .domain "." ",dc=") -}}
 {{- $search_base := ifthen .ldap.included (print "ou=People," $ldap) .ldap.search_base -}}
+{{- define "additional_domains_comma"}}{{ range .additional_domains }}, {{ .x }}{{end}}{{end}}
+{{- define "additional_domains_space"}}{{ range .additional_domains }} {{ .x }}{{end}}{{end}}
 
 
 services:
@@ -28,23 +30,30 @@ services:
       POSTFIX_MYORIGIN: {{ .domain }}
       POSTFIX_MYDOMAIN: {{ .domain }}
       POSTFIX_MYHOSTNAME: {{ .address }}
-      POSTFIX_VIRTUAL_MAILBOX_DOMAINS: {{ .domain }}
+      POSTFIX_VIRTUAL_MAILBOX_DOMAINS: {{ .domain }} {{- template "additional_domains_comma" . }}
       POSTFIX_LDAP_BIND_DN: {{ .postfix.ldap.bind_dn }}
       POSTFIX_LDAP_BIND_PASSWORD: {{ .postfix.ldap.bind_pw }}
       POSTFIX_LDAP_SEARCH_BASE: {{ $search_base }}
+      POSTFIX_LDAP_USERNAME_ATTRIBUTE: {{ .ldap.username_attribute }}
       POSTFIX_LDAP_HOST: {{ .ldap.server }}
-      POSTFIX_LDAP_DOMAIN: {{ .domain }}
+      POSTFIX_LDAP_DOMAIN: {{ .domain }} {{- template "additional_domains_comma" . }}
       {{ template "certificates" .}}
     ports:
       - "25:25"
       - "587:587"
     networks:
       - internal
+      {{- if not .ldap.included }}
       - auth.mailstack.postfix
+      {{- end }}
     volumes:
       - type: volume
         source: certificates
         target: /etc/certificates
+        read_only: yes
+      - type: bind
+        source: ./postfix-aliases
+        target: /etc/postfix/aliases
         read_only: yes
     restart: always
 
@@ -60,13 +69,19 @@ services:
       DOVECOT_LDAP_BIND_DN: {{ .dovecot.ldap.bind_dn }}
       DOVECOT_LDAP_BIND_PASSWORD: {{ .dovecot.ldap.bind_pw }}
       DOVECOT_LDAP_SEARCH_BASE: {{ $search_base }}
+      DOVECOT_LDAP_USER_OBJECT_CLASS: {{ .ldap.user_objectclass }}
+      DOVECOT_LDAP_USERNAME_ATTRIBUTE: {{ .ldap.username_attribute }}
       DOVECOT_LDAP_HOST: {{ .ldap.server }}
+      DOVECOT_IMAP_LOGIN_PERFORMANCE_MODE: "{{ .dovecot.imap_login_performance_mode }}"
       {{ template "certificates" .}}
     ports:
       - "143:143"
       - "993:993"
       - "110:110"
       - "995:995"
+    {{ if .dovecot.publish_sieve_port }}
+      - "4190:4190"
+    {{ end }}
     volumes:
       - type: volume
         source: mailboxes
@@ -80,7 +95,9 @@ services:
         read_only: yes
     networks:
       - internal
+      {{- if not .ldap.included }}
       - auth.mailstack.dovecot
+      {{- end }}
     restart: always
 
   sogo:
@@ -98,6 +115,11 @@ services:
       SOGO_LDAP_BIND_PASSWORD: {{ .sogo.ldap.bind_pw }}
       # SoGo's term for search base
       SOGO_LDAP_BASE_DN: {{ $search_base }}
+      SOGO_LDAP_USERNAME_ATTRIBUTE: {{ .ldap.username_attribute }}
+      SOGO_WORKER_COUNT: {{ .sogo.worker_count }}
+      SOGO_APPOINTMENT_SEND_EMAIL_NOTIFICATIONS: "{{ .sogo.appointment_send_email_notifications }}"
+      SOGO_ACLS_SEND_EMAIL_NOTIFICATIONS: "{{ .sogo.acls_send_email_notifications }}"
+      SOGO_FOLDERS_SEND_EMAIL_NOTIFICATIONS: "{{ .sogo.folders_send_email_notifications }}"
       ENABLE_DEBUG: "{{ .sogo.debug }}"
       POSTGRES_USER: {{ .postgres.user }}
       POSTGRES_PASSWORD: {{ .postgres.password }}
@@ -107,7 +129,9 @@ services:
       - database
       - sogo.cache
       - sogo.proxy
+      {{- if not .ldap.included }}
       - auth.mailstack.sogo
+      {{- end }}
     volumes:
       - type: volume
         source: sogo-web
@@ -166,11 +190,11 @@ services:
       {{- end }}
     {{- if not .caddy.internal }}
     ports:
-      - "0.0.0.0:80:80"
-      - "0.0.0.0:443:443"
+      - "80:80"
+      - "443:443"
       {{- /* If no domain is set, the webinterface is enabled and not directly published */ -}}
       {{- if and (not .rspamd.webinterface.domain) (and .rspamd.webinterface.enable (not .rspamd.webinterface.internal)) }}
-      - "0.0.0.0:11334:11334"
+      - "11334:11334"
       {{- end }}
     {{- end }}
     environment:
@@ -267,6 +291,7 @@ networks:
   {{- end }}
 
 
+  {{- if not .ldap.included }}
   auth.mailstack.postfix:
     external:
       name: auth.mailstack.postfix
@@ -276,6 +301,7 @@ networks:
   auth.mailstack.sogo:
     external:
       name: auth.mailstack.sogo
+  {{- end }}
 
   {{- if .caddy.internal }}
   expose.mailstack.caddy:
