@@ -25,7 +25,7 @@ services:
     build: ./postfix
     {{ end -}}
     labels: &labels
-      at.cryptec.dev.infrastructure.mailstack.version: "0.3.0"
+      at.cryptec.dev.infrastructure.mailstack.version: "0.4.0"
     environment:
       POSTFIX_MYORIGIN: {{ .domain }}
       POSTFIX_MYDOMAIN: {{ .domain }}
