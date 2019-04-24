@@ -5,6 +5,7 @@ Upcoming version
 - Added support for simple aliases. No querying from LDAP, yet.
 - Added configuration for SOGo's worker count.
 - Added configuration for SOGo's notification settings.
+- Added configuration for publishing Dovecot's Sieve port.
 
 
 Version 0.3.0

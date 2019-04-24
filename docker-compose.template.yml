@@ -77,6 +77,9 @@ services:
       - "993:993"
       - "110:110"
       - "995:995"
+    {{ if .dovecot.publish_sieve_port }}
+      - "4190:4190"
+    {{ end }}
     volumes:
       - type: volume
         source: mailboxes
