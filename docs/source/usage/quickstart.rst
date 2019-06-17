@@ -119,6 +119,8 @@ Settings overview
   | ``dovecot.imap_login_performance_mode`` | ``NO``                              | Enables Dovecot's high-performance mode for logins. This seems to be usefull starting from 100 concurrent IMAP     |
   |                                         |                                     | connections. See `Dovecot's documentation`_ for details. Note this has potential security implications.            |
   +-----------------------------------------+-------------------------------------+--------------------------------------------------------------------------------------------------------------------+
+  | ``dovecot.mail_max_userip_connections`` | ``10``                              | Amount of simultanious connections that can be established per user and IP to Dovecot                              |
+  +-----------------------------------------+-------------------------------------+--------------------------------------------------------------------------------------------------------------------+
   | ``rspamd.controller.password``          | ``''``                              | Rspamd hashed password with ``PBKDF2-Blake2`` for accessing the rspamd webinterface.                               |
   +-----------------------------------------+-------------------------------------+--------------------------------------------------------------------------------------------------------------------+
   | ``rspamd.controller.enable_password``   | ``''``                              | Rspamd hashed password with ``PBKDF2-Blake2`` for feeding Spam information into Rspamd.                            |
