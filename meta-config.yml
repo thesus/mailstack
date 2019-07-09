@@ -74,6 +74,8 @@ vars:
       appointment_send_email_notifications: 'NO'
       acls_send_email_notifications: 'NO'
       folders_send_email_notifications: 'NO'
+      maximum_sync_window_size: '99'
+      maximum_sync_response_size: '512'
     comment: SOGo settings
 
   postgres:
