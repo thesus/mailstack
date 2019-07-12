@@ -5,62 +5,62 @@ Getting started
 Requirements:
 
 * docker version 18.03.1 or higher
-* docker-compose version 1.21.1 or higher
-* config-management version 1.1.2 or higher
+  * docker-compose version 1.21.1 or higher
+    * config-management version 1.1.2 or higher
 
-We're using `config-management`_ to compile a custom ``docker-compose.yml`` file.
-Once you've compiled ``config-management`` change to the mailstack git repository and create your custom configuration with:
+    We're using `config-management`_ to compile a custom ``docker-compose.yml`` file.
+    Once you've compiled ``config-management`` change to the mailstack git repository and create your custom configuration with:
 
-.. _config-management: https://dev.cryptec.at/david/config-management
+    .. _config-management: https://dev.cryptec.at/david/config-management
 
 
-.. code:: console
+ .. code:: console
 
   config-management gen >> config.yml
 
 
-Now you can start editing and customizing your freshly created `config.yml`.
+  Now you can start editing and customizing your freshly created `config.yml`.
 
-.. note::
+  .. note::
 
   This is only a quick overview. Follow the quickstart for more detailed information.
 
 
-You can use this preflight check to determine propably occurring errors.
+  You can use this preflight check to determine propably occurring errors.
 
-* DNS reachable? Even from outside?
-* TLS Certificates created or managed by caddy?
-* LDAP Users for postfix, dovecot and SoGo?
-* External Volumes and Networks created? (see `docker`_)
+  * DNS reachable? Even from outside?
+    * TLS Certificates created or managed by caddy?
+      * LDAP Users for postfix, dovecot and SoGo?
+        * External Volumes and Networks created? (see `docker`_)
 
-.. _docker: https://docs.docker.com/engine/reference/commandline/cli/
-
-
-You may wan't to prepare your mailstack before you start it. If ``self`` is selected as a certificate source, it would be a good Idea
-to create a certificate or copy it to the right location. If you're in a hurry just generate it and proceed. See :ref:`reference-tls`.
-Besides creating or copying certificates, rspamd needs some help to hatch. The Webinterface in enabled by default, but no passwords are set.
-For all configuration options and setup of passwords visit :ref:`reference-rspamd`. Some of the volumes and networks that are used by the mailstack
-are ``external``, thats a docker term to describe their connectivity to other containers. Docker compose can't create them, so they need to be defined
-manually. Create the following volume: ``certificates``
+        .. _docker: https://docs.docker.com/engine/reference/commandline/cli/
 
 
-To create your ``docker-compose.yml`` file, run:
+     You may wan't to prepare your mailstack before you start it. If ``self`` is selected as a certificate source, it would be a good Idea
+     to create a certificate or copy it to the right location. If you're in a hurry just generate it and proceed. See :ref:`reference-tls`.
+     Besides creating or copying certificates, rspamd needs some help to hatch. The Webinterface in enabled by default, but no passwords are set.
+     For all configuration options and setup of passwords visit :ref:`reference-rspamd`. Some of the volumes and networks that are used by the mailstack
+     are ``external``, thats a docker term to describe their connectivity to other containers. Docker compose can't create them, so they need to be defined
+     manually. Create the following volume: ``certificates``
 
-.. code:: console
+
+     To create your ``docker-compose.yml`` file, run:
+
+     .. code:: console
 
   config-management
 
 
-You should see a freshly created `docker-compose.yml` in your current directory. Take a glance at it or use it right away with:
+  You should see a freshly created `docker-compose.yml` in your current directory. Take a glance at it or use it right away with:
 
 
-.. code:: console
+  .. code:: console
 
   docker-compose up -d
 
 
-Once you've succesfully started all services you can prepopulate the (internal) ldap with Organizational Units and Users for dovecot, postfix and sogo.
-You can find more information about setting up the OpenLDAP here: :ref:`reference-ldap`
+  Once you've succesfully started all services you can prepopulate the (internal) ldap with Organizational Units and Users for dovecot, postfix and sogo.
+  You can find more information about setting up the OpenLDAP here: :ref:`reference-ldap`
 
 
 Settings overview
@@ -139,6 +139,10 @@ Settings overview
   +-----------------------------------------+-------------------------------------+--------------------------------------------------------------------------------------------------------------------+
   | ``sogo.sx_vmem_limit``                  | ``384``                             | Parameter used to set the maximum amount of memory (in megabytes) that a child can use.                            |
   +-----------------------------------------+-------------------------------------+--------------------------------------------------------------------------------------------------------------------+
+  | ``sogo.maximum_sync_window_size``       | ``99``                              | Parameter used to overwrite the maximum number of items returned during a Sync operation.                          |
+  +-----------------------------------------+-------------------------------------+--------------------------------------------------------------------------------------------------------------------+
+  | ``sogo.maximum_sync_response_size``     | ``512``                             | Parameter used to overwrite the maximum response size during a Sync operation. The value is in kilobytes.          |
+  -----------------------------------------+-------------------------------------+--------------------------------------------------------------------------------------------------------------------+
   | ``sogo.debug``                          | ``NO``                              | Set to ``'YES'`` to enable Sogo debug mode. Set to ``'NO'`` otherwise.                                             |
   +-----------------------------------------+-------------------------------------+--------------------------------------------------------------------------------------------------------------------+
   | ``postgres.user``                       | none                                | Username for Postgres access.                                                                                      |
