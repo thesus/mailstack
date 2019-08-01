@@ -14,8 +14,8 @@ version: "3.5"
 
 {{- $ldap := print "dc=" (replace .domain "." ",dc=") -}}
 {{- $search_base := ifthen .ldap.included (print "ou=People," $ldap) .ldap.search_base -}}
-{{- define "additional_domains_comma"}}{{ range .additional_domains }}, {{ .x }}{{end}}{{end}}
-{{- define "additional_domains_space"}}{{ range .additional_domains }} {{ .x }}{{end}}{{end}}
+{{- define "additional_domains_comma"}}{{ range .additional_domains }}, {{ . }}{{end}}{{end}}
+{{- define "additional_domains_space"}}{{ range .additional_domains }} {{ . }}{{end}}{{end}}
 
 
 services:
