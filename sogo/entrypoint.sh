@@ -2,6 +2,10 @@
 
 set -e
 
+# Copy custom CA certificates to right place and update them
+cp -r /custom-ca-certificates /usr/local/share/ca-certificates
+update-ca-certificates
+
 chown sogo:sogo -R /var/lib/sogo/
 
 exec dockerize -template /etc/sogo/sogo.template.conf:/etc/sogo/sogo.conf \

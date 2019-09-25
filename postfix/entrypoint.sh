@@ -2,6 +2,10 @@
 
 set -e
 
+# Copy custom CA certificates to right place and update them
+cp -r /custom-ca-certificates /usr/local/share/ca-certificates
+update-ca-certificates
+
 cp -f /etc/services /var/spool/postfix/etc/services
 cp -f /etc/resolv.conf /var/spool/postfix/etc
 

@@ -2,6 +2,11 @@
 
 set -e
 
+
+# Copy custom CA certificates to right place and update them
+cp -r /custom-ca-certificates /usr/local/share/ca-certificates
+update-ca-certificates
+
 if [ ! -f /usr/lib/dovecot/dhparams/dh.pem ]; then
     echo "File with Diffie Hellman Parameters not found, copying generic one..."
     cp /var/tmp/dovecot/dh.pem /usr/lib/dovecot/dhparams/dh.pem

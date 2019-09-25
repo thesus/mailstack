@@ -56,6 +56,9 @@ services:
         source: ./postfix-aliases
         target: /etc/postfix/aliases
         read_only: yes
+      - type: bind
+        source: ./custom-ca-certificates
+        target: /custom-ca-certificates
     restart: always
 
   dovecot:
@@ -95,6 +98,9 @@ services:
         source: certificates
         target: /etc/certificates
         read_only: yes
+      - type: bind
+        source: ./custom-ca-certificates
+        target: /custom-ca-certificates
     networks:
       - internal
       {{- if not .ldap.included }}
@@ -141,6 +147,9 @@ services:
       - type: volume
         source: sogo-web
         target: /usr/lib/GNUstep/SOGo/WebServerResources
+      - type: bind
+        source: ./custom-ca-certificates
+        target: /custom-ca-certificates
     restart: always
 
   memcached:
