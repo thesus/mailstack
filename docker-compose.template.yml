@@ -37,6 +37,7 @@ services:
       POSTFIX_LDAP_USERNAME_ATTRIBUTE: {{ .ldap.username_attribute }}
       POSTFIX_LDAP_HOST: {{ .ldap.server }}
       POSTFIX_LDAP_DOMAIN: {{ .domain }} {{- template "additional_domains_comma" . }}
+      POSTFIX_RELAYHOST: "{{ .postfix.relayhost }}"
       {{ template "certificates" .}}
     ports:
       - "25:25"

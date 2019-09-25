@@ -41,6 +41,7 @@ vars:
       ldap:
         bind_dn: uid=postfix,ou=Services,dc=example,dc=com
         bind_pw: apfel
+      relayhost: ""
     comment: All Settings regarding postfix.
 
   dovecot:
