@@ -1,4 +1,8 @@
 vars:
+  image_tag:
+    default: master
+    comment: Docker image tag
+
   domain:
     default: example.com
     comment: Default Domain

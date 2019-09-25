@@ -20,7 +20,7 @@ version: "3.5"
 
 services:
   postfix:
-    image: dev.cryptec.at:5000/infrastructure/mailstack/postfix:master
+    image: dev.cryptec.at:5000/infrastructure/mailstack/postfix:{{ .image_tag }}
     {{ if .compose.include_build_settings -}}
     build: ./postfix
     {{ end -}}
@@ -59,7 +59,7 @@ services:
     restart: always
 
   dovecot:
-    image: dev.cryptec.at:5000/infrastructure/mailstack/dovecot:master
+    image: dev.cryptec.at:5000/infrastructure/mailstack/dovecot:{{ .image_tag }}
     {{ if .compose.include_build_settings -}}
     build: ./dovecot
     {{ end -}}
@@ -103,7 +103,7 @@ services:
     restart: always
 
   sogo:
-    image: dev.cryptec.at:5000/infrastructure/mailstack/sogo:master
+    image: dev.cryptec.at:5000/infrastructure/mailstack/sogo:{{ .image_tag }}
     {{ if .compose.include_build_settings -}}
     build: ./sogo
     {{ end -}}
@@ -170,7 +170,7 @@ services:
     restart: always
 
   caddy:
-    image: dev.cryptec.at:5000/infrastructure/mailstack/caddy:master
+    image: dev.cryptec.at:5000/infrastructure/mailstack/caddy:{{ .image_tag }}
     {{ if .compose.include_build_settings -}}
     build: ./caddy
     {{ end -}}
@@ -218,7 +218,7 @@ services:
     restart: always
 
   rspamd:
-    image: dev.cryptec.at:5000/infrastructure/mailstack/rspamd:master
+    image: dev.cryptec.at:5000/infrastructure/mailstack/rspamd:{{ .image_tag }}
     {{ if .compose.include_build_settings -}}
     build: ./rspamd
     {{ end -}}
