@@ -7,7 +7,7 @@ COPY --from=dockerize /usr/local/bin/dockerize /usr/local/bin/dockerize
 ARG DEBIAN_FRONTEND=noninteractive
 
 RUN apt-get update && \
-    apt-get install -y --no-install-recommends apt-transport-https gnupg2 rsyslog ca-certificates dirmngr && \
+    apt-get install -y --no-install-recommends apt-transport-https gnupg2 rsyslog ca-certificates dirmngr sudo && \
     rm -rf /var/lib/apt/lists/*
 
 RUN set -x && \
@@ -18,6 +18,8 @@ RUN set -x && \
     apt-key adv --keyserver hkp://keyserver.ubuntu.com --recv-key "$key"
 
 RUN echo "deb https://packages.inverse.ca/SOGo/nightly/4/debian/ stretch stretch" > /etc/apt/sources.list.d/SOGo.list
+RUN echo "sogo            ALL = (ALL) NOPASSWD: /usr/bin/update-ca.sh" >> /etc/sudoers
+COPY ./update-ca.sh /usr/bin/update-ca.sh
 
 RUN mkdir /usr/share/doc/sogo/ && \
     touch /usr/share/doc/sogo/empty.sh && \
