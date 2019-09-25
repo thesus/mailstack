@@ -73,3 +73,8 @@ milter_default_action = accept
 
 # Disable backward compatability
 compatibility_level = 2
+
+{{ if .Env.POSTFIX_RELAYHOST -}}
+# Relay all outgoing email to {{ .Env.POSTFIX_RELAYHOST }}
+relayhost = {{ .Env.POSTFIX_RELAYHOST }}
+{{ end -}}
