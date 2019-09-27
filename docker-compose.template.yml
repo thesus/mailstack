@@ -124,7 +124,8 @@ services:
       <<: *labels
     environment:
       SOGO_MAIL_DOMAIN: {{ .domain }}
-      SOGO_LDAP_HOST: {{ ifthen .ldap.tls "ldaps://" "ldap://" }}{{ .ldap.server }}
+      SOGO_LDAP_HOST: {{ ifthen .ldap.implicit_tls "ldaps://" "ldap://" }}{{ .ldap.server }}{{ ifthen .ldap.starttls "????!StartTLS" "" }}
+      SOGO_LDAP_STARTTLS: {{ .ldap.starttls }}
       SOGO_LDAP_BIND_DN: {{ .sogo.ldap.bind_dn }}
       SOGO_LDAP_BIND_PASSWORD: {{ .sogo.ldap.bind_pw }}
       # SoGo's term for search base
