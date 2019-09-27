@@ -46,7 +46,11 @@ vars:
         bind_dn: uid=postfix,ou=Services,dc=example,dc=com
         bind_pw: apfel
       relayhost: ""
+<<<<<<< HEAD
       skip_rspamd_milter: false
+=======
+      enable_implicit_tls: false
+>>>>>>> Add option to start SMTP port with implicit TLS
     comment: All Settings regarding postfix.
 
   dovecot:

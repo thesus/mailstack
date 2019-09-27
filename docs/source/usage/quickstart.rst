@@ -118,6 +118,9 @@ Settings overview
   |                                         |                                     | option is intented for setups that need rspamd to be configured in a seperate mail service, e. g. some kind of     |
   |                                         |                                     | gateway in front of this mailstack's postfix.                                                                      |
   +-----------------------------------------+-------------------------------------+--------------------------------------------------------------------------------------------------------------------+
+  | ``postfix.enable_implicit_tls``         | ``false``                           | Enable an SMTP port for implicit TLS connections. Connections will be accepted on port 465. This feature is only   |
+  |                                         |                                     | included for legacy devices and should not be enabled unless required.                                             |
+  +-----------------------------------------+-------------------------------------+--------------------------------------------------------------------------------------------------------------------+
   | ``dovecot.ldap.bind_dn``                | none                                | Bind DN used by Dovecot to access LDAP.                                                                            |
   +-----------------------------------------+-------------------------------------+--------------------------------------------------------------------------------------------------------------------+
   | ``dovecot.ldap.bind_pw``                | none                                | Password used by Dovecot to access LDAP.                                                                           |
