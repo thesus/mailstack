@@ -42,7 +42,13 @@ dnpass = {{ .Env.DOVECOT_LDAP_BIND_PASSWORD }}
 #sasl_authz_id =
 
 # Use TLS to connect to the LDAP server.
+{{ if eq .Env.DOVECOT_LDAP_STARTTLS  "true"-}}
+# Activate StartTLS
+tls = yes
+{{ else -}}
+# Not using StartTLS
 #tls = no
+{{ end -}}
 # TLS options, currently supported only with OpenLDAP:
 #tls_ca_cert_file =
 #tls_ca_cert_dir =

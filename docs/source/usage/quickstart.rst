@@ -91,6 +91,14 @@ Settings overview
   +-----------------------------------------+-------------------------------------+--------------------------------------------------------------------------------------------------------------------+
   | ``ldap.server``                         | ``ldap://ldap:389``                 | URL of the LDAP server used for authentication.                                                                    |
   +-----------------------------------------+-------------------------------------+--------------------------------------------------------------------------------------------------------------------+
+  | ``ldap.implicit_tls``                   | ``false``                           | Dovecot, SOGo and Postfix try to connect to LDAP with implicit TLS, if  this is set to ``true``.  Note: This does  |
+  |                                         |                                     | not change the configuration of the internal LDAP, so it cannot be properly used in conjuction with the internal   |
+  |                                         |                                     | LDAP option. Note: Work is not done to properly configure Dovecot and Postfix, yet.                                |
+  +-----------------------------------------+-------------------------------------+--------------------------------------------------------------------------------------------------------------------+
+  | ``ldap.starttls``                       | ``false``                           | Dovecot, SOGo and Postfix try to connect to LDAP with explicit TLS (StartTLS), if  this is set to ``true``.        |
+  |                                         |                                     | Use for setups with Samba. Note: This does not change the configuration of the internal LDAP, so it cannot be      |
+  |                                         |                                     | properly used in conjuction with the internal LDAP option.                                                         |
+  +-----------------------------------------+-------------------------------------+--------------------------------------------------------------------------------------------------------------------+
   | ``ssl.certificate``                     | ``caddy``                           | Set this to ``caddy`` if you want Caddy to take care of certificates with Let's Encrypt. Set this to ``self``      |
   |                                         |                                     | if you will take care of getting certificates yourself. Set this to `none` if you are not going to use TLS.        |
   +-----------------------------------------+-------------------------------------+--------------------------------------------------------------------------------------------------------------------+

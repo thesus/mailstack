@@ -36,6 +36,7 @@ services:
       POSTFIX_LDAP_SEARCH_BASE: {{ $search_base }}
       POSTFIX_LDAP_USERNAME_ATTRIBUTE: {{ .ldap.username_attribute }}
       POSTFIX_LDAP_HOST: {{ .ldap.server }}
+      POSTFIX_LDAP_STARTTLS: {{ .ldap.starttls }}
       POSTFIX_LDAP_DOMAIN: {{ .domain }} {{- template "additional_domains_comma" . }}
       POSTFIX_RELAYHOST: "{{ .postfix.relayhost }}"
       {{ template "certificates" .}}
@@ -76,6 +77,7 @@ services:
       DOVECOT_LDAP_USER_OBJECT_CLASS: {{ .ldap.user_objectclass }}
       DOVECOT_LDAP_USERNAME_ATTRIBUTE: {{ .ldap.username_attribute }}
       DOVECOT_LDAP_HOST: {{ .ldap.server }}
+      DOVECOT_LDAP_STARTTLS: "{{ .ldap.tls }}"
       DOVECOT_IMAP_LOGIN_PERFORMANCE_MODE: "{{ .dovecot.imap_login_performance_mode }}"
       DOVECOT_MAIL_MAX_USERIP_CONNECTIONS: "{{ .dovecot.mail_max_userip_connections }}"
       {{ template "certificates" .}}
@@ -119,7 +121,7 @@ services:
       <<: *labels
     environment:
       SOGO_MAIL_DOMAIN: {{ .domain }}
-      SOGO_LDAP_HOST: {{ ifthen .ldap.tls "ldaps://" "ldap://" }}{{ .ldap.server }}
+      SOGO_LDAP_HOST: {{ ifthen .ldap.implicit_tls "ldaps://" "ldap://" }}{{ .ldap.server }}{{ ifthen .ldap.starttls "????!StartTLS" "" }}
       SOGO_LDAP_BIND_DN: {{ .sogo.ldap.bind_dn }}
       SOGO_LDAP_BIND_PASSWORD: {{ .sogo.ldap.bind_pw }}
       # SoGo's term for search base

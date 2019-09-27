@@ -3,6 +3,9 @@ bind_dn = {{ .Env.POSTFIX_LDAP_BIND_DN }}
 bind_pw = {{ .Env.POSTFIX_LDAP_BIND_PASSWORD }}
 
 server_host = {{ .Env.POSTFIX_LDAP_HOST }}
+{{ if .Env.POSTFIX_LDAP_STARTTLS -}}
+start_tls = yes
+{{ end -}}
 
 search_base = {{ .Env.POSTFIX_LDAP_SEARCH_BASE }}
 domain = {{ .Env.POSTFIX_LDAP_DOMAIN }}

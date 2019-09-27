@@ -21,7 +21,8 @@ vars:
       admin_pw: apfel
       search_base: ou=People,dc=example,dc=com
       server: ldap:389
-      tls: false
+      starttls: false
+      implicit_tls: false
       username_attribute: uid
       user_objectclass: inetOrgPerson
     comment: "Commonly shared ldap settings, don't set ldap protocol here."
