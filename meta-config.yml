@@ -46,6 +46,7 @@ vars:
         bind_dn: uid=postfix,ou=Services,dc=example,dc=com
         bind_pw: apfel
       relayhost: ""
+      skip_rspamd_milter: false
     comment: All Settings regarding postfix.
 
   dovecot:

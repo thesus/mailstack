@@ -114,6 +114,10 @@ Settings overview
   +-----------------------------------------+-------------------------------------+--------------------------------------------------------------------------------------------------------------------+
   | ``postfix.relayhost``                   | ``""``                              | Relay host used by Postfix for outgoing email.                                                                     |
   +-----------------------------------------+-------------------------------------+--------------------------------------------------------------------------------------------------------------------+
+  | ``postfix.skip_rspamd_milter``          | ``false``                           | Configure Postfix to *not* use rspamd as a milter. Note: This does *not* prevent rspamd from being set up. This    |
+  |                                         |                                     | option is intented for setups that need rspamd to be configured in a seperate mail service, e. g. some kind of     |
+  |                                         |                                     | gateway in front of this mailstack's postfix.                                                                      |
+  +-----------------------------------------+-------------------------------------+--------------------------------------------------------------------------------------------------------------------+
   | ``dovecot.ldap.bind_dn``                | none                                | Bind DN used by Dovecot to access LDAP.                                                                            |
   +-----------------------------------------+-------------------------------------+--------------------------------------------------------------------------------------------------------------------+
   | ``dovecot.ldap.bind_pw``                | none                                | Password used by Dovecot to access LDAP.                                                                           |

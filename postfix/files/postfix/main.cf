@@ -64,12 +64,16 @@ smtpd_sasl_auth_enable = yes
 smtpd_sasl_security_options = noanonymous
 
 
+{{ if not .Env.POSTFIX_SKIP_RSPAMD_MILTER -}}
 # Spamfiltering and DKIM
 smtpd_milters = inet:rspamd:11332
 non_smtpd_milters = inet:rspamd:11332
 milter_protocol = 6
 milter_mail_macros =  i {mail_addr} {client_addr} {client_name} {auth_authen}
 milter_default_action = accept
+{{ else -}}
+# No spamfiltering in this Postfix.
+{{ end -}}
 
 # Disable backward compatability
 compatibility_level = 2
