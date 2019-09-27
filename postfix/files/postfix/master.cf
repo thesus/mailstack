@@ -11,6 +11,12 @@
 # ==========================================================================
 smtp      inet  n       -       n       -       -       smtpd
   -o smtpd_sasl_auth_enable=no
+{{ if .Env.POSTFIX_ENABLE_IMPLICIT_TLS -}}
+submissions      inet  n       -       n       -       -       smtpd
+  -o smtpd_tls_wrappermode=yes -o smtpd_sasl_auth_enable=yes
+  -o smtpd_tls_security_level=encrypt
+  -o tls_preempt_cipherlist=yes
+{{ end -}}
 #smtp      inet  n       -       y       -       1       postscreen
 #smtpd     pass  -       -       y       -       -       smtpd
 #dnsblog   unix  -       -       y       -       0       dnsblog

@@ -38,9 +38,13 @@ services:
       POSTFIX_LDAP_HOST: {{ .ldap.server }}
       POSTFIX_LDAP_DOMAIN: {{ .domain }} {{- template "additional_domains_comma" . }}
       POSTFIX_RELAYHOST: "{{ .postfix.relayhost }}"
+      POSTFIX_ENABLE_IMPLICIT_TLS: {{ .postfix.enable_implicit_tls }}
       {{ template "certificates" .}}
     ports:
       - "25:25"
+{{ if .postfix.enable_implicit_tls -}}
+      - "465:465"
+{{ end -}}
       - "587:587"
     networks:
       - internal
