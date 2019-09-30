@@ -113,6 +113,7 @@ services:
     {{ if .compose.include_build_settings -}}
     build: ./sogo
     {{ end -}}
+    # The user has to be sogo. See sogo/entrypoint.sh for more details.
     user: sogo
     labels:
       <<: *labels
