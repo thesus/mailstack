@@ -137,6 +137,12 @@ Settings overview
   |                                         |                                     | are possible, caddy will expose rspamd under it's default port ``11334``. For more information take a look at the  |
   |                                         |                                     | reference.                                                                                                         |
   +-----------------------------------------+-------------------------------------+--------------------------------------------------------------------------------------------------------------------+
+  | ``rspamd.expose_milter_port``           | ``false``                           | If set to true, publish rspamd's milter port. This is useful if a Postfix service on a different host has to do    |
+  |                                         |                                     | spam filtering, e. g. if you have a gateway in front of mailstack's Postfix, that processes incoming email. If     |
+  |                                         |                                     | you do not configure this "first-contact" host to do the spam filtering, mail will incorrectly be more likely to   |
+  |                                         |                                     | be classified as spam, because all mail looks like it is being sent by the "first-contact" mail gateway; SPF would |
+  |                                         |                                     | always fail.                                                                                                       |
+  +-----------------------------------------+-------------------------------------+--------------------------------------------------------------------------------------------------------------------+
   | ``sogo.ldap.bind_dn``                   | none                                | Bind DN used by Sogo to access LDAP.                                                                               |
   +-----------------------------------------+-------------------------------------+--------------------------------------------------------------------------------------------------------------------+
   | ``sogo.ldap.bind_pw``                   | none                                | Password used by Sogo to access LDAP.                                                                              |

@@ -250,6 +250,10 @@ services:
       RSPAMD_WEBINTERFACE_ENABLE_PASSWORD: {{ replace .rspamd.controller.enable_password "$" "$$" }}
     volumes:
       - rspamd-data:/var/lib/rspamd
+{{ if rspamd.expose_milter_port -}}
+    ports:
+      - "11332:11332"
+{{ end -}}
     restart: always
 
   redis:
