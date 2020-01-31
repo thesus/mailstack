@@ -175,6 +175,7 @@ services:
       POSTGRES_PASSWORD: {{ .postgres.password }}
       POSTGRES_DB: {{ .postgres.db }}
       PGDATA: /var/lib/postgresql/data/pgdata
+    command: "-c max_connections={{ .postgres.max_connections }}"
     networks:
       - database
     restart: always

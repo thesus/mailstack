@@ -89,6 +89,7 @@ vars:
       user: sogo
       password: apfel
       db: sogo
+      max_connections: 50
     comment: Database for sogo. All user data such as calendars/addressbooks are stored here.
 
   compose:
