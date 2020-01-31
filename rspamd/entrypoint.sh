@@ -13,4 +13,10 @@ else
     echo "Found DKIM signature, skipping creation."
 fi
 
+# Whitelist sogo for SPF checks. Otherwise rspamd will flag
+# invitations send from SOGo as if it was sent from an external
+# host and probably flag it as spam, because it does not match
+# the SPF policy.
+printf 'whitelist = ["%s"]' "$(dig +short sogo)" > /etc/rspamd/local.d/spf.conf
+
 exec dockerize -template /var/tmp/rspamd:/etc/rspamd/local.d/ /usr/bin/rspamd -f -u _rspamd -g _rspamd

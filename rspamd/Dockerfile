@@ -9,7 +9,7 @@ COPY --from=dockerize /usr/local/bin/dockerize /usr/local/bin/dockerize
 ARG DEBIAN_FRONTEND=noninteractive
 
 RUN apt-get update && \
-    apt-get install -y --no-install-recommends apt-transport-https gnupg2 ca-certificates dirmngr wget && \
+    apt-get install -y --no-install-recommends apt-transport-https gnupg2 ca-certificates dirmngr wget dnsutils && \
     rm -rf /var/lib/apt/lists/*
 
 RUN set -x && \
