@@ -14,6 +14,11 @@ cp -a /dev/random /var/spool/postfix/dev/
 
 chmod 755 /etc/postfix
 
+# Remove rsyslogd.pid, if it exsists. Otherwise rsyslogd will not start
+# sometimes, if it was not properly shutdown and the same container is
+# restarted.
+test -e /run/rsyslogd.pid && rm /run/rsyslogd.pid
+
 service rsyslog start
 
 postmap /etc/postfix/aliases
