@@ -1,6 +1,6 @@
 FROM dev.cryptec.at:5000/infrastructure/dockerize:latest as dockerize
 
-FROM debian:stretch-slim
+FROM debian:buster-slim
 
 COPY --from=dockerize /usr/local/bin/dockerize /usr/local/bin/dockerize
 
@@ -17,7 +17,7 @@ RUN set -x && \
     apt-key adv --keyserver ha.pool.sks-keyservers.net --recv-key "$key" || \
     apt-key adv --keyserver hkp://keyserver.ubuntu.com --recv-key "$key"
 
-RUN echo "deb https://packages.inverse.ca/SOGo/nightly/4/debian/ stretch stretch" > /etc/apt/sources.list.d/SOGo.list
+RUN echo "deb https://packages.inverse.ca/SOGo/nightly/5/debian/ buster buster" > /etc/apt/sources.list.d/SOGo.list
 
 # To see why we need sudo for this, see sogo/entrypoint.sh
 RUN echo "sogo            ALL = (ALL) NOPASSWD: /usr/bin/update-ca.sh" >> /etc/sudoers
