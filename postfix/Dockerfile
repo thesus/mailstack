@@ -1,6 +1,6 @@
 FROM dev.cryptec.at:5000/infrastructure/dockerize:latest as dockerize
 
-FROM debian:buster-slim
+FROM debian:bullseye-slim
 
 COPY --from=dockerize /usr/local/bin/dockerize /usr/local/bin/dockerize
 
