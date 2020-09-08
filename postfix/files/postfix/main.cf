@@ -52,6 +52,7 @@ smtp_tls_CAfile = /etc/ssl/certs/ca-certificates.crt
 
 # Virtual Transport
 virtual_transport = lmtp:dovecot:24
+lmtp_destination_recipient_limit = 1
 virtual_mailbox_maps = proxy:ldap:/etc/postfix/ldap_virtual_recipients.cf
 local_recipient_maps = $virtual_mailbox_maps
 virtual_mailbox_domains = {{ .Env.POSTFIX_VIRTUAL_MAILBOX_DOMAINS }}
