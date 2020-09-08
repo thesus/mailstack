@@ -9,3 +9,4 @@ domain = {{ .Env.POSTFIX_LDAP_DOMAIN }}
 query_filter = (&(mail=%s)(member=*))
 special_result_attribute = member
 result_attribute = mail
+debuglevel = 64
