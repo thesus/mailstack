@@ -37,6 +37,7 @@ services:
       POSTFIX_LDAP_USERNAME_ATTRIBUTE: {{ .ldap.username_attribute }}
       POSTFIX_LDAP_HOST: {{ .ldap.server }}
       POSTFIX_LDAP_DOMAIN: {{ .domain }} {{- template "additional_domains_comma" . }}
+      POSTFIX_LDAP_ALIAS_FILTER: "{{ .postfix.ldap.alias_filter }}"
       POSTFIX_RELAYHOST: "{{ .postfix.relayhost }}"
       POSTFIX_ENABLE_IMPLICIT_TLS: {{ .postfix.enable_implicit_tls }}
       {{ template "certificates" .}}

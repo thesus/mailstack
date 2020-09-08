@@ -45,6 +45,7 @@ vars:
       ldap:
         bind_dn: uid=postfix,ou=Services,dc=example,dc=com
         bind_pw: apfel
+        alias_filter: email=%s
       relayhost: ""
 <<<<<<< HEAD
       skip_rspamd_milter: false
