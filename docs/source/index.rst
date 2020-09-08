@@ -11,6 +11,7 @@ Welcome to mailstack's documentation!
    :caption: Contents:
 
    usage/quickstart
+   usage/upgrading
 
    reference/index
 
