@@ -6,5 +6,7 @@ server_host = {{ .Env.POSTFIX_LDAP_HOST }}
 
 search_base = {{ .Env.POSTFIX_LDAP_SEARCH_BASE }}
 domain = {{ .Env.POSTFIX_LDAP_DOMAIN }}
-query_filter = {{ .Env.POSTFIX_LDAP_ALIAS_FILTER }}
-result_attribute = mail
+query_filter = (&(mail=%s)(member=*))
+special_result_attribute = member
+leaf_result_attribute = mail
+result_attribute =
