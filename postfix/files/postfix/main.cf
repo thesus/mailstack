@@ -56,7 +56,7 @@ lmtp_destination_recipient_limit = 1
 virtual_mailbox_maps = proxy:ldap:/etc/postfix/ldap_virtual_recipients.cf
 local_recipient_maps = $virtual_mailbox_maps
 virtual_mailbox_domains = {{ .Env.POSTFIX_VIRTUAL_MAILBOX_DOMAINS }}
-virtual_alias_maps = hash:/etc/postfix/aliases, ldap:/etc/postfix/ldap_virtual_aliases.cf
+virtual_alias_maps = hash:/etc/postfix/aliases, proxy:ldap:/etc/postfix/ldap_virtual_aliases.cf
 
 # SASL Authentication
 smtpd_sasl_type = dovecot
