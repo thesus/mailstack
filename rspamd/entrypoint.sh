@@ -13,11 +13,22 @@ else
     echo "Found DKIM signature, skipping creation."
 fi
 
+# SOGo does not authenticate itself when sending mail. To avoid
+# everything being flagged as spam, we have to build an exception.
+# We will build this exception on IPs.
+# These IPs are used in in local.d/multimap.conf.
+# This is where the IPs have to go
+SOGO_IP_MAP_FILE="/var/lib/rspamd/sogo-ips.map"
+# The file is on a volume and it might exist and might not exist.
+# So we will make sure that it's there...
+touch "$SOGO_IP_MAP_FILE"
+# ...and empty
+truncate --size=0 "$SOGO_IP_MAP_FILE"
 
-# Whitelist sogo for SPF checks. Otherwise rspamd will flag
-# emails send from SOGo since sogo doesn't login as the user
-# as if it was sent from an external  host and probably flag
-# it as spam, because it does not match the SPF policy.
-printf 'whitelist = ["%s"];' "$(dig +short sogo)" > /etc/rspamd/local.d/spf.conf
+# Add SOGo hosts, one per line
+SOGO_HOSTS="$(dig +short sogo)"
+for SOGO_IP in $SOGO_HOSTS; do
+    echo "$SOGO_IP" >> "$SOGO_IP_MAP_FILE"
+done
 
 exec dockerize -template /var/tmp/rspamd:/etc/rspamd/local.d/ /usr/bin/rspamd -f -u _rspamd -g _rspamd
