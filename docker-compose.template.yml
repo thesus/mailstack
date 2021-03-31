@@ -140,6 +140,8 @@ services:
       SOGO_SX_VMEM_LIMIT: "{{ .sogo.sx_vmem_limit }}"
       SOGO_MAXIMUM_SYNC_WINDOW_SIZE: "{{ .sogo.maximum_sync_window_size }}"
       SOGO_MAXIMUM_SYNC_RESPONSE_SIZE: "{{ .sogo.maximum_sync_response_size }}"
+      SOGO_KINDFIELDNAME: "{{ .sogo.kind_field_name }}"
+      SOGO_MULTIPLEBOOKINGSFIELDNAME: "{{ .sogo.multiple_bookings_field_name }}"
       ENABLE_DEBUG: "{{ .sogo.debug }}"
       POSTGRES_USER: {{ .postgres.user }}
       POSTGRES_PASSWORD: {{ .postgres.password }}

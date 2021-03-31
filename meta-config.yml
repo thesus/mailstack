@@ -86,6 +86,8 @@ vars:
       sx_vmem_limit: '384'
       maximum_sync_window_size: '99'
       maximum_sync_response_size: '512'
+      kind_field_name: ''
+      multiple_bookings_field_name: ''
     comment: SOGo settings
 
   postgres:
