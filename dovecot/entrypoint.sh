@@ -45,8 +45,10 @@ sievec /usr/lib/dovecot/sieve/learn-ham.sieve
 sievec /usr/lib/dovecot/sieve/spam-global.sieve
 chmod +x /usr/lib/dovecot/sieve/sa-learn-ham.sh /usr/lib/dovecot/sieve/sa-learn-spam.sh
 
-chown -R vmail /var/vmail
-chgrp -R vmail /var/vmail
-chmod -R 770 /var/vmail
+if [ "$DOVECOT_SKIP_FILE_PERMISSION_FIX" != "yes" ]; then
+    chown -R vmail /var/vmail
+    chgrp -R vmail /var/vmail
+    chmod -R 770 /var/vmail
+fi
 
 exec /usr/local/bin/dockerize dovecot -F

@@ -86,6 +86,7 @@ services:
       DOVECOT_IMAP_LOGIN_PERFORMANCE_MODE: "{{ .dovecot.imap_login_performance_mode }}"
       DOVECOT_MAIL_MAX_USERIP_CONNECTIONS: "{{ .dovecot.mail_max_userip_connections }}"
       POSTFIX_SKIP_RSPAMD_MILTER: {{ .postfix.skip_rspamd_milter }}
+      DOVECOT_SKIP_FILE_PERMISSION_FIX: "{{ .dovecot.skip_file_permission_fix }}"
       {{ template "certificates" .}}
     ports:
       - "143:143"

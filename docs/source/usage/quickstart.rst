@@ -132,6 +132,10 @@ Settings overview
   +-----------------------------------------+-------------------------------------+--------------------------------------------------------------------------------------------------------------------+
   | ``dovecot.mail_max_userip_connections`` | ``10``                              | Amount of simultanious connections that can be established per user and IP to Dovecot                              |
   +-----------------------------------------+-------------------------------------+--------------------------------------------------------------------------------------------------------------------+
+  | ``dovecot.skip_file_permission_fix``    | ``'no'``                            | If this is set to ``'yes'``, the entrypoint for Dovecot will skip the initial recursive setting of owners, groups, |
+  |                                         |                                     | and permissions bits for all mail dirs. This option can be used, if you are certain that your permissions are      |
+  |                                         |                                     | correct and you want to improve the startup time of the container for large mailboxes.                             |
+  +-----------------------------------------+-------------------------------------+--------------------------------------------------------------------------------------------------------------------+
   | ``rspamd.controller.password``          | ``''``                              | Rspamd hashed password with ``PBKDF2-Blake2`` for accessing the rspamd webinterface.                               |
   +-----------------------------------------+-------------------------------------+--------------------------------------------------------------------------------------------------------------------+
   | ``rspamd.controller.enable_password``   | ``''``                              | Rspamd hashed password with ``PBKDF2-Blake2`` for feeding Spam information into Rspamd.                            |

@@ -59,6 +59,7 @@ vars:
       imap_login_performance_mode: "NO"
       publish_sieve_port: "NO"
       mail_max_userip_connections: "10"
+      skip_file_permission_fix: "no"
     comment: Dovecot settings
 
   rspamd:
